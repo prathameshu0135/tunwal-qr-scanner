@@ -1,23 +1,115 @@
 <div class="page">
   <div class="topbar">
-    <h2>Admin Dashboard</h2>
+    <div>
+      <span class="badge">Admin Panel</span>
+      <h2>Admin Dashboard</h2>
+      <p class="subtitle">
+        Manage QR codes, warranty records, emergency profiles and activity.
+      </p>
+    </div>
+
     <div class="actions">
-      <a mat-raised-button color="primary" routerLink="/admin/create-qr">Create QR</a>
-      <a mat-raised-button routerLink="/admin/qr-list">QR List</a>
-      <button mat-stroked-button color="warn" (click)="logout()">Logout</button>
+      <a mat-raised-button color="primary" routerLink="/admin/create-qr">
+        Create QR
+      </a>
+
+      <a mat-raised-button routerLink="/admin/qr-list">
+        QR List
+      </a>
+
+      <a mat-raised-button class="warranty-btn" routerLink="/admin/warranty-records">
+        Warranty Records
+      </a>
+
+      <button mat-stroked-button color="warn" (click)="logout()">
+        Logout
+      </button>
     </div>
   </div>
 
-  <div *ngIf="loading()">Loading dashboard...</div>
-  <div class="error" *ngIf="error()">{{ error() }}</div>
+  <div class="loading-box" *ngIf="loading()">
+    Loading dashboard...
+  </div>
+
+  <div class="error" *ngIf="error()">
+    {{ error() }}
+  </div>
 
   <div class="grid" *ngIf="data() as d">
-    <mat-card><h3>Total QRs</h3><p>{{ d.totalQrs }}</p></mat-card>
-    <mat-card><h3>Active QRs</h3><p>{{ d.activeQrs }}</p></mat-card>
-    <mat-card><h3>Inactive QRs</h3><p>{{ d.inactiveQrs }}</p></mat-card>
-    <mat-card><h3>Blocked QRs</h3><p>{{ d.blockedQrs }}</p></mat-card>
-    <mat-card><h3>Total Customers</h3><p>{{ d.totalCustomers }}</p></mat-card>
-    <mat-card><h3>Total Scans</h3><p>{{ d.totalScans }}</p></mat-card>
-    <mat-card><h3>Total Alerts</h3><p>{{ d.totalAlerts }}</p></mat-card>
+    <mat-card class="stat-card primary">
+      <span>Total QRs</span>
+      <p>{{ d.totalQrs }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card success">
+      <span>Active QRs</span>
+      <p>{{ d.activeQrs }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card muted">
+      <span>Inactive QRs</span>
+      <p>{{ d.inactiveQrs }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card danger">
+      <span>Blocked QRs</span>
+      <p>{{ d.blockedQrs }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card warning">
+      <span>Warranty Pending</span>
+      <p>{{ d.warrantyPending || 0 }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card success">
+      <span>Warranty Registered</span>
+      <p>{{ d.warrantyRegistered || 0 }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card primary">
+      <span>Emergency Active</span>
+      <p>{{ d.emergencyActive || 0 }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card muted">
+      <span>Emergency Skipped</span>
+      <p>{{ d.emergencySkipped || 0 }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <span>Total Customers</span>
+      <p>{{ d.totalCustomers }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <span>Total Scans</span>
+      <p>{{ d.totalScans }}</p>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <span>Total Alerts</span>
+      <p>{{ d.totalAlerts }}</p>
+    </mat-card>
+  </div>
+
+  <div class="quick-actions" *ngIf="data()">
+    <h3>Quick Actions</h3>
+
+    <div class="quick-grid">
+      <a routerLink="/admin/create-qr" class="quick-card">
+        <strong>Create QR</strong>
+        <span>Generate a new QR code for scooter warranty and emergency flow.</span>
+      </a>
+
+      <a routerLink="/admin/qr-list" class="quick-card">
+        <strong>QR Management</strong>
+        <span>View all QRs, block/unblock and check current QR status.</span>
+      </a>
+
+      <a routerLink="/admin/warranty-records" class="quick-card highlight">
+        <strong>Warranty Records</strong>
+        <span>View, search and export private warranty registrations.</span>
+      </a>
+    </div>
   </div>
 </div>

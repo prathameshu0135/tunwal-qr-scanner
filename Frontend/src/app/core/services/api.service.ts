@@ -19,9 +19,17 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  // -------------------------
+  // Admin Dashboard
+  // -------------------------
+
   getDashboard() {
     return this.http.get<DashboardResponse>(`${this.baseUrl}/admin/dashboard`);
   }
+
+  // -------------------------
+  // Admin QR Management
+  // -------------------------
 
   createQr() {
     return this.http.post<{ message: string; data: QrItem }>(
@@ -65,6 +73,17 @@ export class ApiService {
     );
   }
 
+  resetQr(id: string) {
+    return this.http.patch<{ message: string; data: any }>(
+      `${this.baseUrl}/admin/qr/${id}/reset`,
+      {}
+    );
+  }
+
+  // -------------------------
+  // Public QR / OTP Flow
+  // -------------------------
+
   getQrStatus(qrId: string) {
     return this.http.get<QrStatusResponse>(
       `${this.baseUrl}/public/qr/${qrId}/status`
@@ -79,12 +98,38 @@ export class ApiService {
   }
 
   verifyOtp(qrId: string, mobile: string, otp: string) {
-    return this.http.post(`${this.baseUrl}/public/otp/verify`, {
+    return this.http.post<{
+      success?: boolean;
+      message: string;
+      qrId: string;
+      mobile: string;
+      verified: boolean;
+    }>(`${this.baseUrl}/public/otp/verify`, {
       qrId,
       mobile,
       otp
     });
   }
+
+  // -------------------------
+  // Public Warranty Flow
+  // -------------------------
+
+  registerWarranty(payload: any) {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      data: {
+        qrId: string;
+        warrantyStatus: string;
+        emergencyStatus: string;
+      };
+    }>(`${this.baseUrl}/warranty/register`, payload);
+  }
+
+  // -------------------------
+  // Public Emergency Flow
+  // -------------------------
 
   registerCustomer(payload: any) {
     return this.http.post<CustomerRegistrationResponse>(
@@ -99,6 +144,19 @@ export class ApiService {
     );
   }
 
+  skipEmergency(qrId: string) {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      data: {
+        qrId: string;
+        status: string;
+        warrantyStatus: string;
+        emergencyStatus: string;
+      };
+    }>(`${this.baseUrl}/public/emergency/skip/${qrId}`, {});
+  }
+
   sendEmergencyAlert(qrId: string, latitude?: number, longitude?: number) {
     return this.http.post(`${this.baseUrl}/public/emergency/alert`, {
       qrId,
@@ -107,24 +165,43 @@ export class ApiService {
     });
   }
 
-  registerWarranty(payload: any) {
-    return this.http.post<any>(`${this.baseUrl}/warranty/register`, payload);
+  createScanLog(payload: {
+    qrId: string;
+    scanType: string;
+    latitude?: number | null;
+    longitude?: number | null;
+    alertSent?: boolean;
+  }) {
+    return this.http.post(`${this.baseUrl}/public/scan-log`, payload);
   }
 
-  skipEmergency(qrId: string) {
-    return this.http.post<any>(
-      `${this.baseUrl}/public/emergency/skip/${qrId}`,
-      {}
-    );
-  }
+    // -------------------------
+  // Admin Warranty Management
+  // -------------------------
 
   getWarrantyRecords(search: string = '') {
     const query = search ? `?search=${encodeURIComponent(search)}` : '';
-    return this.http.get<any>(`${this.baseUrl}/admin/warranty${query}`);
+
+    return this.http.get<{
+      success: boolean;
+      count: number;
+      data: any[];
+    }>(`${this.baseUrl}/admin/warranty${query}`);
   }
 
   getWarrantyDetail(qrId: string) {
-    return this.http.get<any>(`${this.baseUrl}/admin/warranty/${qrId}`);
+    return this.http.get<{
+      success: boolean;
+      data: any;
+    }>(`${this.baseUrl}/admin/warranty/${encodeURIComponent(qrId)}`);
+  }
+
+  updateWarrantyDetail(qrId: string, payload: any) {
+    return this.http.patch<{
+      success: boolean;
+      message: string;
+      data: any;
+    }>(`${this.baseUrl}/admin/warranty/${encodeURIComponent(qrId)}`, payload);
   }
 
   downloadWarrantyExcel() {
@@ -132,4 +209,5 @@ export class ApiService {
       responseType: 'blob'
     });
   }
+
 }

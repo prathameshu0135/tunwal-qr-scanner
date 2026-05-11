@@ -1,1 +1,278 @@
-<p>warranty-detail works!</p>
+<div class="detail-page">
+  <div class="page-header">
+    <div>
+      <span class="badge">Admin Only</span>
+      <h1>Warranty Registration Detail</h1>
+      <p>View and edit private warranty information for verification and support.</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="print-btn" (click)="printPage()" [disabled]="editMode()">
+        Print
+      </button>
+
+      <button type="button" class="edit-btn" (click)="enableEdit()" *ngIf="!editMode()">
+        Edit
+      </button>
+
+      <button type="button" class="back-btn" (click)="goBack()">
+        Back to Records
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-box" *ngIf="loading()">
+    Loading warranty detail...
+  </div>
+
+  <div class="error-box" *ngIf="error()">
+    {{ error() }}
+  </div>
+
+  <div class="success-box" *ngIf="success()">
+    {{ success() }}
+  </div>
+
+  <ng-container *ngIf="data() as item">
+    <section class="qr-summary-card">
+      <div>
+        <span>QR ID</span>
+        <strong>{{ item.qrId }}</strong>
+      </div>
+
+      <div>
+        <span>Registered At</span>
+        <strong>{{ item.createdAt | date:'dd-MM-yyyy, h:mm a' }}</strong>
+      </div>
+    </section>
+
+    <!-- EDIT MODE -->
+    <form [formGroup]="form" *ngIf="editMode(); else viewMode">
+      <div class="edit-grid">
+        <section class="detail-card">
+          <div class="card-heading">
+            <div class="icon-box">1</div>
+            <div>
+              <h2>Scooter Details</h2>
+              <p>Edit scooter and component numbers.</p>
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label>Scooter Name</label>
+            <input formControlName="scooterName" placeholder="Enter scooter name" />
+          </div>
+
+          <div class="edit-field">
+            <label>Scooter Color</label>
+            <input formControlName="scooterColor" placeholder="Enter scooter color" />
+          </div>
+
+          <div class="edit-field">
+            <label>Controller Number</label>
+            <input formControlName="controllerNumber" placeholder="Enter controller number" />
+          </div>
+
+          <div class="edit-field">
+            <label>Battery Number</label>
+            <input formControlName="batteryNumber" placeholder="Enter battery number" />
+          </div>
+
+          <div class="edit-field">
+            <label>Motor Number</label>
+            <input formControlName="motorNumber" placeholder="Enter motor number" />
+          </div>
+
+          <div class="edit-field">
+            <label>Chassis Number</label>
+            <input formControlName="chassisNumber" placeholder="Enter chassis number" />
+          </div>
+
+          <div class="edit-field">
+            <label>Charger Number</label>
+            <input formControlName="chargerNumber" placeholder="Enter charger number" />
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <div class="card-heading">
+            <div class="icon-box">2</div>
+            <div>
+              <h2>Dealer Details</h2>
+              <p>Edit dealer and sale details.</p>
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label>Dealer Name</label>
+            <input formControlName="dealerName" placeholder="Enter dealer name" />
+          </div>
+
+          <div class="edit-field">
+            <label>Scooter Date of Sale</label>
+            <input type="date" formControlName="dateOfSale" />
+          </div>
+
+          <div class="edit-field">
+            <label>State</label>
+            <select formControlName="state">
+              <option value="">Select State</option>
+              <option *ngFor="let state of states" [value]="state">
+                {{ state }}
+              </option>
+            </select>
+          </div>
+
+          <div class="edit-field">
+            <label>Dealer Address</label>
+            <textarea rows="5" formControlName="dealerAddress" placeholder="Enter dealer address"></textarea>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <div class="card-heading">
+            <div class="icon-box">3</div>
+            <div>
+              <h2>Customer Details</h2>
+              <p>Edit basic customer ownership details.</p>
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label>Customer Name</label>
+            <input formControlName="customerName" placeholder="Enter customer name" />
+          </div>
+
+          <div class="edit-field">
+            <label>Contact Number</label>
+            <input maxlength="10" formControlName="contactNumber" placeholder="Enter 10 digit number" />
+          </div>
+
+          <div class="privacy-note">
+            QR ID cannot be edited. Emergency contacts are not part of warranty registration.
+          </div>
+        </section>
+      </div>
+
+      <div class="edit-actions">
+        <button type="button" class="cancel-btn" (click)="cancelEdit()">
+          Cancel
+        </button>
+
+        <button type="button" class="save-btn" (click)="saveChanges()" [disabled]="saving()">
+          {{ saving() ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- VIEW MODE -->
+    <ng-template #viewMode>
+      <div class="detail-grid">
+        <section class="detail-card">
+          <div class="card-heading">
+            <div class="icon-box">1</div>
+            <div>
+              <h2>Scooter Details</h2>
+              <p>Vehicle identification and component numbers.</p>
+            </div>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <span>Scooter Name</span>
+              <strong>{{ item.scooterName || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Scooter Color</span>
+              <strong>{{ item.scooterColor || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Controller Number</span>
+              <strong>{{ item.controllerNumber || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Battery Number</span>
+              <strong>{{ item.batteryNumber || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Motor Number</span>
+              <strong>{{ item.motorNumber || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Chassis Number</span>
+              <strong>{{ item.chassisNumber || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Charger Number</span>
+              <strong>{{ item.chargerNumber || '-' }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <div class="card-heading">
+            <div class="icon-box">2</div>
+            <div>
+              <h2>Dealer Details</h2>
+              <p>Dealer and sale information.</p>
+            </div>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <span>Dealer Name</span>
+              <strong>{{ item.dealerName || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Scooter Date of Sale</span>
+              <strong>{{ item.dateOfSale | date:'dd-MM-yyyy' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>State</span>
+              <strong>{{ item.state || '-' }}</strong>
+            </div>
+
+            <div class="info-row address-row">
+              <span>Dealer Address</span>
+              <strong>{{ item.dealerAddress || '-' }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <div class="card-heading">
+            <div class="icon-box">3</div>
+            <div>
+              <h2>Customer Details</h2>
+              <p>Basic customer ownership details.</p>
+            </div>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <span>Customer Name</span>
+              <strong>{{ item.customerName || '-' }}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Contact Number</span>
+              <strong>{{ item.contactNumber || '-' }}</strong>
+            </div>
+          </div>
+
+          <div class="privacy-note">
+            Emergency contact details are not part of warranty registration.
+          </div>
+        </section>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>

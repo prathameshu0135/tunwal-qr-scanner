@@ -6,6 +6,8 @@ const publicRoutes = require('./routes/publicRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const warrantyRoutes = require('./routes/warrantyRoutes');
+const adminWarrantyRoutes = require('./routes/adminWarrantyRoutes');
+
 
 const app = express();
 
@@ -23,6 +25,7 @@ app.get('/', (req, res) => {
 app.use('/api/public', publicRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/warranty', warrantyRoutes);
+app.use('/api/admin/warranty', adminWarrantyRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

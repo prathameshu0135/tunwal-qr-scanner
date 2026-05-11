@@ -41,7 +41,7 @@ export const routes: Routes = [
     canActivate: [adminAuthGuard],
     loadComponent: () =>
       import('./features/admin/warranty-records/warranty-records.component').then(
-        m => m.WarrantyRecords
+        m => m.WarrantyRecordsComponent
       )
   },
 
@@ -50,25 +50,16 @@ export const routes: Routes = [
     canActivate: [adminAuthGuard],
     loadComponent: () =>
       import('./features/admin/warranty-detail/warranty-detail.component').then(
-        m => m.WarrantyDetail
+        m => m.WarrantyDetailComponent
       )
   },
 
-  /*
-    New main public QR scan route.
-    New generated QR links should open:
-    /qr/:qrId
-  */
   {
     path: 'qr/:qrId',
     loadComponent: () =>
       import('./features/public/activate/activate.component').then(m => m.ActivateComponent)
   },
 
-  /*
-    Old route kept for backward compatibility.
-    If old QR stickers were generated with /activate/:qrId, they still work.
-  */
   {
     path: 'activate/:qrId',
     loadComponent: () =>

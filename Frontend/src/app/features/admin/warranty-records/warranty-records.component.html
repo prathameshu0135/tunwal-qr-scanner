@@ -1,1 +1,105 @@
-<p>warranty-records works!</p>
+<div class="warranty-admin-page">
+  <div class="page-header">
+    <div>
+      <span class="badge">Admin Only</span>
+      <h1>Warranty Records</h1>
+      <p>
+        View, search, verify and export private warranty registration records.
+      </p>
+    </div>
+
+    <button class="export-btn" type="button" (click)="exportExcel()" [disabled]="exporting()">
+      {{ exporting() ? 'Exporting...' : 'Download Excel' }}
+    </button>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <span>Total Records</span>
+      <strong>{{ totalRecords }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Search Mode</span>
+      <strong>{{ search ? 'Filtered' : 'All Records' }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Data Access</span>
+      <strong>Admin Only</strong>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input
+      type="text"
+      [(ngModel)]="search"
+      placeholder="Search QR, customer, contact, chassis, motor, battery, dealer, state..."
+      (keyup.enter)="loadRecords()"
+    />
+
+    <button type="button" (click)="loadRecords()">
+      Search
+    </button>
+
+    <button type="button" class="clear-btn" (click)="clearSearch()">
+      Clear
+    </button>
+  </div>
+
+  <div class="error-box" *ngIf="error()">
+    {{ error() }}
+  </div>
+
+  <div class="loading-box" *ngIf="loading()">
+    Loading warranty records...
+  </div>
+
+  <div class="table-card" *ngIf="!loading()">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>QR ID</th>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Scooter</th>
+            <th>Battery</th>
+            <th>Motor</th>
+            <th>Chassis</th>
+            <th>Dealer</th>
+            <th>State</th>
+            <th>Date of Sale</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let record of records()">
+            <td class="qr-cell">{{ record.qrId }}</td>
+            <td>{{ record.customerName }}</td>
+            <td>{{ record.contactNumber }}</td>
+            <td>{{ record.scooterName }}</td>
+            <td>{{ record.batteryNumber }}</td>
+            <td>{{ record.motorNumber }}</td>
+            <td>{{ record.chassisNumber }}</td>
+            <td>{{ record.dealerName }}</td>
+            <td>{{ record.state }}</td>
+            <td>{{ record.dateOfSale | date:'dd-MM-yyyy' }}</td>
+            <td>
+              <button class="view-btn" type="button" (click)="openDetail(record.qrId)">
+                View
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="records().length === 0">
+            <td colspan="11" class="empty-state">
+              No warranty records found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

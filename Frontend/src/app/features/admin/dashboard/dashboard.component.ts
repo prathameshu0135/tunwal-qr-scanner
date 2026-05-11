@@ -31,12 +31,14 @@ export class DashboardComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.error.set('');
+
     this.api.getDashboard().subscribe({
-      next: res => {
+      next: (res) => {
         this.data.set(res);
         this.loading.set(false);
       },
-      error: err => {
+      error: (err) => {
         this.error.set(err?.error?.message || 'Failed to load dashboard');
         this.loading.set(false);
       }
