@@ -17,16 +17,6 @@ const adminSchema = new mongoose.Schema(
       trim: true
     },
 
-    email: {
-      type: String,
-      required: false,
-      unique: true,
-      sparse: true,
-      index: true,
-      lowercase: true,
-      trim: true
-    },
-
     passwordHash: {
       type: String,
       required: true

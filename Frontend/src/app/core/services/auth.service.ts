@@ -21,7 +21,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(username: string, password: string) {
+login(username: string, password: string) {
   const cleanUsername = String(username || '').trim();
 
   return this.http

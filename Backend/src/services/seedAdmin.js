@@ -3,7 +3,6 @@ const Admin = require('../models/admin');
 
 async function seedAdmin() {
   const username = (process.env.ADMIN_USERNAME || 'admin').trim().toLowerCase();
-  const email = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
   const password = process.env.ADMIN_PASSWORD;
 
   if (!username || !password) {
@@ -11,38 +10,16 @@ async function seedAdmin() {
     return;
   }
 
-  const existing = await Admin.findOne({
-    $or: [
-      { username },
-      ...(email ? [{ email }] : [])
-    ]
-  });
+  const existing = await Admin.findOne({ username });
 
   if (existing) {
-    let changed = false;
+    existing.username = username;
+    existing.email = undefined;
+    existing.isActive = true;
 
-    if (!existing.username) {
-      existing.username = username;
-      changed = true;
-    }
+    await existing.save();
 
-    if (email && !existing.email) {
-      existing.email = email;
-      changed = true;
-    }
-
-    if (existing.isActive === false) {
-      existing.isActive = true;
-      changed = true;
-    }
-
-    if (changed) {
-      await existing.save();
-      console.log(`Admin updated with username: ${username}`);
-    } else {
-      console.log(`Admin exists: ${existing.username || existing.email}`);
-    }
-
+    console.log(`Admin exists/updated: ${username}`);
     return;
   }
 
@@ -51,7 +28,6 @@ async function seedAdmin() {
   await Admin.create({
     name: 'Super Admin',
     username,
-    email: email || undefined,
     passwordHash,
     role: 'superadmin',
     isActive: true

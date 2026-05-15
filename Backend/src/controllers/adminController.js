@@ -15,16 +15,16 @@ const asyncHandler = require('../utils/asyncHandler');
 
 function signToken(admin) {
   return jwt.sign(
-    { id: admin._id, email: admin.email, role: admin.role },
+    { id: admin._id, username: admin.username, role: admin.role },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
 }
 
 const loginAdmin = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, password } = req.body;
 
-  const loginId = String(username || email || '').trim().toLowerCase();
+  const loginId = String(username || '').trim().toLowerCase();
 
   if (!loginId || !password) {
     return res.status(400).json({
@@ -32,16 +32,17 @@ const loginAdmin = asyncHandler(async (req, res) => {
     });
   }
 
-  const admin = await Admin.findOne({
-    $or: [
-      { username: loginId },
-      { email: loginId }
-    ]
-  });
+  const admin = await Admin.findOne({ username: loginId });
 
   if (!admin) {
     return res.status(401).json({
       message: 'Invalid username or password'
+    });
+  }
+
+  if (admin.isActive === false) {
+    return res.status(403).json({
+      message: 'Admin account is disabled'
     });
   }
 
@@ -60,7 +61,6 @@ const loginAdmin = asyncHandler(async (req, res) => {
       id: admin._id,
       name: admin.name,
       username: admin.username,
-      email: admin.email,
       role: admin.role
     }
   });
