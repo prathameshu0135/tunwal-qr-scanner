@@ -1,6 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { AdminLoginResponse } from '../../shared/models/api.models';
 
@@ -11,24 +12,31 @@ export class AuthService {
   private readonly tokenKey = 'admin_token';
   private readonly adminKey = 'admin_user';
 
-  private readonly tokenSignal = signal<string | null>(localStorage.getItem(this.tokenKey));
+  private readonly tokenSignal = signal<string | null>(
+    localStorage.getItem(this.tokenKey)
+  );
 
   readonly isLoggedIn = computed(() => !!this.tokenSignal());
   readonly token = computed(() => this.tokenSignal());
 
   constructor(private http: HttpClient) {}
 
-  login(email: string, password: string) {
-    return this.http
-      .post<AdminLoginResponse>(`${environment.apiBaseUrl}/admin/login`, { email, password })
-      .pipe(
-        tap(res => {
-          localStorage.setItem(this.tokenKey, res.token);
-          localStorage.setItem(this.adminKey, JSON.stringify(res.admin));
-          this.tokenSignal.set(res.token);
-        })
-      );
-  }
+  login(username: string, password: string) {
+  const cleanUsername = String(username || '').trim();
+
+  return this.http
+    .post<AdminLoginResponse>(`${environment.apiBaseUrl}/admin/login`, {
+      username: cleanUsername,
+      password
+    })
+    .pipe(
+      tap((res) => {
+        localStorage.setItem(this.tokenKey, res.token);
+        localStorage.setItem(this.adminKey, JSON.stringify(res.admin));
+        this.tokenSignal.set(res.token);
+      })
+    );
+}
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
@@ -38,5 +46,20 @@ export class AuthService {
 
   getToken(): string | null {
     return this.tokenSignal();
+  }
+
+  getAdmin(): any | null {
+    const raw = localStorage.getItem(this.adminKey);
+
+    if (!raw) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      localStorage.removeItem(this.adminKey);
+      return null;
+    }
   }
 }

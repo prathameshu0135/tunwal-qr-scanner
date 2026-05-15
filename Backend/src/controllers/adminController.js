@@ -22,13 +22,26 @@ function signToken(admin) {
 }
 
 const loginAdmin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  const admin = await Admin.findOne({ email });
+  const loginId = String(username || email || '').trim().toLowerCase();
+
+  if (!loginId || !password) {
+    return res.status(400).json({
+      message: 'Username and password are required'
+    });
+  }
+
+  const admin = await Admin.findOne({
+    $or: [
+      { username: loginId },
+      { email: loginId }
+    ]
+  });
 
   if (!admin) {
     return res.status(401).json({
-      message: 'Invalid email or password'
+      message: 'Invalid username or password'
     });
   }
 
@@ -36,7 +49,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
   if (!matched) {
     return res.status(401).json({
-      message: 'Invalid email or password'
+      message: 'Invalid username or password'
     });
   }
 
@@ -46,6 +59,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     admin: {
       id: admin._id,
       name: admin.name,
+      username: admin.username,
       email: admin.email,
       role: admin.role
     }

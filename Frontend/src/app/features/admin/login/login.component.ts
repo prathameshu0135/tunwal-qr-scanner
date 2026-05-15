@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 import { AuthService } from '../../../core/services/auth.service';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -32,10 +31,8 @@ export class LoginComponent {
   error = signal('');
   showPassword = signal(false);
 
-  isProduction = environment.production;
-
   form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required]],
     password: ['', [Validators.required]]
   });
 
@@ -44,17 +41,6 @@ export class LoginComponent {
     private router: Router
   ) {}
 
-  fillDemoLogin(): void {
-    if (this.isProduction) return;
-
-    this.form.patchValue({
-      email: 'admin@tunwal.local',
-      password: 'Admin@123'
-    });
-
-    this.error.set('');
-  }
-
   togglePassword(): void {
     this.showPassword.update((value) => !value);
   }
@@ -62,23 +48,23 @@ export class LoginComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.error.set('Please enter valid email and password.');
+      this.error.set('Please enter username and password.');
       return;
     }
 
     this.loading.set(true);
     this.error.set('');
 
-    const { email, password } = this.form.getRawValue();
+    const { username, password } = this.form.getRawValue();
 
-    this.authService.login(email!, password!).subscribe({
+    this.authService.login(username!.trim(), password!).subscribe({
       next: () => {
         this.loading.set(false);
         this.router.navigate(['/admin/dashboard']);
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.message || 'Login failed. Please check your credentials.');
+        this.error.set(err?.error?.message || 'Invalid username or password.');
       }
     });
   }

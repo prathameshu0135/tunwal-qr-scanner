@@ -1,7 +1,13 @@
 <div class="login-page">
   <mat-card class="login-card">
     <div class="brand-header">
-      <img src="/assets/logo.webp" alt="Tunwal E-Motors Logo" class="logo" />
+      <img
+        src="/assets/logo.webp"
+        alt="Tunwal E-Motors Logo"
+        class="logo"
+        width="62"
+        height="62"
+      />
 
       <div>
         <h1>Tunwal E-Motors</h1>
@@ -11,18 +17,22 @@
 
     <div class="login-title">
       <h2>Sign in</h2>
-      <p>Enter your admin credentials to continue.</p>
+      <p>Enter your username and password to continue.</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="full">
-        <mat-label>Email</mat-label>
+        <mat-label>Username</mat-label>
         <input
           matInput
-          formControlName="email"
+          formControlName="username"
           autocomplete="username"
-          placeholder="Enter admin email"
+          placeholder="Enter username"
         />
+
+        <mat-error *ngIf="form.controls.username.hasError('required')">
+          Username is required
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full">
@@ -34,20 +44,15 @@
           autocomplete="current-password"
           placeholder="Enter password"
         />
+
+        <mat-error *ngIf="form.controls.password.hasError('required')">
+          Password is required
+        </mat-error>
       </mat-form-field>
 
       <div class="login-options">
         <button type="button" class="text-btn" (click)="togglePassword()">
           {{ showPassword() ? 'Hide password' : 'Show password' }}
-        </button>
-
-        <button
-          type="button"
-          class="text-btn"
-          *ngIf="!isProduction"
-          (click)="fillDemoLogin()"
-        >
-          Fill test login
         </button>
       </div>
 
