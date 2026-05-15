@@ -6,6 +6,7 @@ const ScanLog = require('../models/ScanLog');
 const generateOtp = require('../utils/generateOtp');
 const asyncHandler = require('../utils/asyncHandler');
 const { sendMockSms, sendMockEmail } = require('../services/notificationService');
+const { sendOtpSms } = require('../services/smsService');
 
 const getQrStatus = asyncHandler(async (req, res) => {
   const { qrId } = req.params;
@@ -44,14 +45,24 @@ const getQrStatus = asyncHandler(async (req, res) => {
 const sendOtp = asyncHandler(async (req, res) => {
   const { qrId, mobile } = req.body;
 
-  if (!qrId || !mobile) {
+  const cleanQrId = String(qrId || '').trim().toUpperCase();
+  const cleanMobile = String(mobile || '').trim();
+
+  if (!cleanQrId || !cleanMobile) {
     return res.status(400).json({
       success: false,
-      message: 'qrId and mobile are required'
+      message: 'QR ID and mobile number are required'
     });
   }
 
-  const qr = await QrCodeModel.findOne({ qrId });
+  if (!/^[0-9]{10}$/.test(cleanMobile)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Enter valid 10 digit mobile number'
+    });
+  }
+
+  const qr = await QrCodeModel.findOne({ qrId: cleanQrId });
 
   if (!qr) {
     return res.status(404).json({
@@ -88,7 +99,10 @@ const sendOtp = asyncHandler(async (req, res) => {
     });
   }
 
-  const latestOtp = await OtpLog.findOne({ qrId, mobile }).sort({ createdAt: -1 });
+  const latestOtp = await OtpLog.findOne({
+    qrId: cleanQrId,
+    mobile: cleanMobile
+  }).sort({ createdAt: -1 });
 
   if (latestOtp) {
     const secondsSinceLastOtp = Math.floor(
@@ -106,11 +120,12 @@ const sendOtp = asyncHandler(async (req, res) => {
   }
 
   const otpCode = generateOtp();
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+  const expiryMinutes = Number(process.env.OTP_EXPIRY_MINUTES || 5);
+  const expiresAt = new Date(Date.now() + expiryMinutes * 60 * 1000);
 
   await OtpLog.create({
-    qrId,
-    mobile,
+    qrId: cleanQrId,
+    mobile: cleanMobile,
     otpCode,
     expiresAt,
     verified: false,
@@ -122,18 +137,33 @@ const sendOtp = asyncHandler(async (req, res) => {
     await qr.save();
   }
 
-  await sendMockSms({
-    qrId,
-    recipientName: 'Owner Verification',
-    recipientMobile: mobile,
-    message: `Your OTP is ${otpCode}`
-  });
+  try {
+    const smsResult = await sendOtpSms(cleanMobile, otpCode);
+
+    console.log('Fast2SMS OTP result:', {
+      qrId: cleanQrId,
+      mobile: cleanMobile,
+      result: smsResult
+    });
+  } catch (smsError) {
+    console.error('Fast2SMS OTP send failed:', {
+      qrId: cleanQrId,
+      mobile: cleanMobile,
+      message: smsError.message,
+      response: smsError?.response?.data
+    });
+
+    return res.status(500).json({
+      success: false,
+      message: 'OTP SMS failed. Please try again.'
+    });
+  }
 
   res.json({
     success: true,
     message: 'OTP sent successfully',
-    qrId,
-    mobile,
+    qrId: cleanQrId,
+    mobile: cleanMobile,
     ...(process.env.NODE_ENV !== 'production' ? { testOtp: otpCode } : {})
   });
 });
@@ -141,16 +171,20 @@ const sendOtp = asyncHandler(async (req, res) => {
 const verifyOtp = asyncHandler(async (req, res) => {
   const { qrId, mobile, otp } = req.body;
 
-  if (!qrId || !mobile || !otp) {
+  const cleanQrId = String(qrId || '').trim().toUpperCase();
+  const cleanMobile = String(mobile || '').trim();
+  const cleanOtp = String(otp || '').trim();
+
+  if (!cleanQrId || !cleanMobile || !cleanOtp) {
     return res.status(400).json({
       success: false,
-      message: 'qrId, mobile and otp are required'
+      message: 'QR ID, mobile and OTP are required'
     });
   }
 
   const otpLog = await OtpLog.findOne({
-    qrId,
-    mobile,
+    qrId: cleanQrId,
+    mobile: cleanMobile,
     verified: false
   }).sort({ createdAt: -1 });
 
@@ -179,7 +213,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
     });
   }
 
-  if (otpLog.otpCode !== otp) {
+  if (otpLog.otpCode !== cleanOtp) {
     await otpLog.save();
 
     return res.status(400).json({
@@ -194,8 +228,8 @@ const verifyOtp = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     message: 'OTP verified successfully',
-    qrId,
-    mobile,
+    qrId: cleanQrId,
+    mobile: cleanMobile,
     verified: true
   });
 });
