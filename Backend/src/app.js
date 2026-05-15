@@ -13,7 +13,7 @@ const adminWarrantyRoutes = require('./routes/adminWarrantyRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
-
+app.set('trust proxy', 1);
 /*
   Security headers.
   Helps protect against common browser-level attacks.

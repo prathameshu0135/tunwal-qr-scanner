@@ -146,7 +146,7 @@ const sendOtp = asyncHandler(async (req, res) => {
       result: smsResult
     });
   } catch (smsError) {
-    console.error('Fast2SMS OTP send failed:', {
+    console.error('OTP SMS send failed:', {
       qrId: cleanQrId,
       mobile: cleanMobile,
       message: smsError.message,
