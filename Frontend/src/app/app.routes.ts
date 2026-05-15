@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
+
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
+import { loginRedirectGuard } from './core/guards/login-redirect.guard';
 
 export const routes: Routes = [
   // -------------------------
@@ -12,16 +14,21 @@ export const routes: Routes = [
   },
 
   // -------------------------
-  // Admin Routes
+  // Admin Login
+  // If already logged in, it redirects to dashboard
   // -------------------------
   {
     path: 'admin/login',
+    canActivate: [loginRedirectGuard],
     loadComponent: () =>
       import('./features/admin/login/login.component').then(
         (m) => m.LoginComponent
       )
   },
 
+  // -------------------------
+  // Protected Admin Routes
+  // -------------------------
   {
     path: 'admin/dashboard',
     canActivate: [adminAuthGuard],
@@ -78,6 +85,7 @@ export const routes: Routes = [
 
   // -------------------------
   // Public QR Flow
+  // These routes must stay public
   // -------------------------
   {
     path: 'qr/:qrId',
