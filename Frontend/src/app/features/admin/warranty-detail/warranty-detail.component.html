@@ -1,71 +1,135 @@
 <div class="detail-page">
+
+  <!-- HEADER -->
   <div class="page-header">
-    <div>
-      <!-- <span class="badge">Admin Only</span> -->
-      <h1>Warranty Registration Detail</h1>
-      <p>View and edit private warranty information for verification and support.</p>
+
+    <div class="header-left">
+
+      <img
+        src="/assets/logo.webp"
+        alt="Tunwal Logo"
+        class="company-logo"
+        loading="lazy"
+      />
+
+      <div>
+        <span class="badge">Admin Panel</span>
+
+        <h1>Warranty Registration Detail</h1>
+
+        <p>
+          View and manage customer warranty registration details securely.
+        </p>
+      </div>
+
     </div>
 
     <div class="header-actions">
-      <button type="button" class="print-btn" (click)="printPage()" [disabled]="editMode()">
+
+      <button
+        type="button"
+        class="dashboard-btn"
+        routerLink="/admin/dashboard"
+      >
+        Dashboard
+      </button>
+
+      <button
+        type="button"
+        class="print-btn"
+        (click)="printPage()"
+        [disabled]="editMode()"
+      >
         Print
       </button>
 
-      <button type="button" class="edit-btn" (click)="enableEdit()" *ngIf="!editMode()">
+      <button
+        type="button"
+        class="edit-btn"
+        (click)="enableEdit()"
+        *ngIf="!editMode()"
+      >
         Edit
       </button>
 
-      <button type="button" class="back-btn" (click)="goBack()">
-        Back to Records
+      <button
+        type="button"
+        class="back-btn"
+        (click)="goBack()"
+      >
+        Back
       </button>
+
     </div>
+
   </div>
 
+  <!-- LOADING -->
   <div class="loading-box" *ngIf="loading()">
     Loading warranty detail...
   </div>
 
+  <!-- ERROR -->
   <div class="error-box" *ngIf="error()">
     {{ error() }}
   </div>
 
+  <!-- SUCCESS -->
   <div class="success-box" *ngIf="success()">
     {{ success() }}
   </div>
 
   <ng-container *ngIf="data() as item">
+
+    <!-- QR SUMMARY -->
     <section class="qr-summary-card">
-      <div>
+
+      <div class="summary-item">
         <span>QR ID</span>
         <strong>{{ item.qrId }}</strong>
       </div>
 
-      <div>
+      <div class="summary-item">
         <span>Registered At</span>
-        <strong>{{ item.createdAt | date:'dd-MM-yyyy, h:mm a' }}</strong>
+        <strong>
+          {{ item.createdAt | date:'dd-MM-yyyy, h:mm a' }}
+        </strong>
       </div>
+
+      <div class="summary-item">
+        <span>Customer</span>
+        <strong>{{ item.customerName || '-' }}</strong>
+      </div>
+
     </section>
 
     <!-- EDIT MODE -->
     <form [formGroup]="form" *ngIf="editMode(); else viewMode">
+
       <div class="edit-grid">
+
+        <!-- VEHICLE -->
         <section class="detail-card">
+
           <div class="card-heading">
+
             <div class="icon-box">1</div>
+
             <div>
               <h2>Vehicle Details</h2>
-              <p>Edit vehicle and component numbers.</p>
+              <p>Edit vehicle and component details.</p>
             </div>
+
           </div>
 
           <div class="edit-field">
             <label>Vehicle Name</label>
-            <input formControlName="scooterName" placeholder="Enter scooter name" />
+            <input formControlName="scooterName" placeholder="Enter vehicle name" />
           </div>
 
           <div class="edit-field">
             <label>Vehicle Color</label>
-            <input formControlName="scooterColor" placeholder="Enter scooter color" />
+            <input formControlName="scooterColor" placeholder="Enter vehicle color" />
           </div>
 
           <div class="edit-field">
@@ -92,15 +156,21 @@
             <label>Charger Number</label>
             <input formControlName="chargerNumber" placeholder="Enter charger number" />
           </div>
+
         </section>
 
+        <!-- DEALER -->
         <section class="detail-card">
+
           <div class="card-heading">
+
             <div class="icon-box">2</div>
+
             <div>
               <h2>Dealer Details</h2>
-              <p>Edit dealer and sale details.</p>
+              <p>Dealer and sale information.</p>
             </div>
+
           </div>
 
           <div class="edit-field">
@@ -109,33 +179,52 @@
           </div>
 
           <div class="edit-field">
-            <label>Scooter Date of Sale</label>
+            <label>Date of Sale</label>
             <input type="date" formControlName="dateOfSale" />
           </div>
 
           <div class="edit-field">
             <label>State</label>
+
             <select formControlName="state">
+
               <option value="">Select State</option>
-              <option *ngFor="let state of states" [value]="state">
+
+              <option
+                *ngFor="let state of states"
+                [value]="state"
+              >
                 {{ state }}
               </option>
+
             </select>
+
           </div>
 
           <div class="edit-field">
             <label>Dealer Address</label>
-            <textarea rows="5" formControlName="dealerAddress" placeholder="Enter dealer address"></textarea>
+
+            <textarea
+              rows="5"
+              formControlName="dealerAddress"
+              placeholder="Enter dealer address"
+            ></textarea>
           </div>
+
         </section>
 
+        <!-- CUSTOMER -->
         <section class="detail-card">
+
           <div class="card-heading">
+
             <div class="icon-box">3</div>
+
             <div>
               <h2>Customer Details</h2>
-              <p>Edit basic customer ownership details.</p>
+              <p>Basic ownership information.</p>
             </div>
+
           </div>
 
           <div class="edit-field">
@@ -145,36 +234,63 @@
 
           <div class="edit-field">
             <label>Contact Number</label>
-            <input maxlength="10" formControlName="contactNumber" placeholder="Enter 10 digit number" />
+
+            <input
+              maxlength="10"
+              formControlName="contactNumber"
+              placeholder="Enter 10 digit mobile number"
+            />
           </div>
 
         </section>
+
       </div>
 
+      <!-- ACTIONS -->
       <div class="edit-actions">
-        <button type="button" class="cancel-btn" (click)="cancelEdit()">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelEdit()"
+        >
           Cancel
         </button>
 
-        <button type="button" class="save-btn" (click)="saveChanges()" [disabled]="saving()">
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveChanges()"
+          [disabled]="saving()"
+        >
           {{ saving() ? 'Saving...' : 'Save Changes' }}
         </button>
+
       </div>
+
     </form>
 
     <!-- VIEW MODE -->
     <ng-template #viewMode>
+
       <div class="detail-grid">
+
+        <!-- VEHICLE -->
         <section class="detail-card">
+
           <div class="card-heading">
+
             <div class="icon-box">1</div>
+
             <div>
               <h2>Vehicle Details</h2>
-              <p>Vehicle identification and component numbers.</p>
+              <p>Vehicle identification information.</p>
             </div>
+
           </div>
 
           <div class="info-list">
+
             <div class="info-row">
               <span>Vehicle Name</span>
               <strong>{{ item.scooterName || '-' }}</strong>
@@ -209,26 +325,34 @@
               <span>Charger Number</span>
               <strong>{{ item.chargerNumber || '-' }}</strong>
             </div>
+
           </div>
+
         </section>
 
+        <!-- DEALER -->
         <section class="detail-card">
+
           <div class="card-heading">
+
             <div class="icon-box">2</div>
+
             <div>
               <h2>Dealer Details</h2>
-              <p>Dealer and sale information.</p>
+              <p>Dealer and vehicle sale information.</p>
             </div>
+
           </div>
 
           <div class="info-list">
+
             <div class="info-row">
               <span>Dealer Name</span>
               <strong>{{ item.dealerName || '-' }}</strong>
             </div>
 
             <div class="info-row">
-              <span>Vehicle Date of Sale</span>
+              <span>Date of Sale</span>
               <strong>{{ item.dateOfSale | date:'dd-MM-yyyy' }}</strong>
             </div>
 
@@ -241,19 +365,27 @@
               <span>Dealer Address</span>
               <strong>{{ item.dealerAddress || '-' }}</strong>
             </div>
+
           </div>
+
         </section>
 
+        <!-- CUSTOMER -->
         <section class="detail-card">
+
           <div class="card-heading">
+
             <div class="icon-box">3</div>
+
             <div>
               <h2>Customer Details</h2>
-              <p>Basic customer ownership details.</p>
+              <p>Customer ownership information.</p>
             </div>
+
           </div>
 
           <div class="info-list">
+
             <div class="info-row">
               <span>Customer Name</span>
               <strong>{{ item.customerName || '-' }}</strong>
@@ -263,10 +395,15 @@
               <span>Contact Number</span>
               <strong>{{ item.contactNumber || '-' }}</strong>
             </div>
+
           </div>
 
         </section>
+
       </div>
+
     </ng-template>
+
   </ng-container>
+
 </div>
