@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 @Component({
   selector: 'app-warranty-records',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+ imports: [CommonModule, FormsModule],
   templateUrl: './warranty-records.component.html',
   styleUrl: './warranty-records.component.css'
 })
@@ -35,9 +35,11 @@ export class WarrantyRecordsComponent implements OnInit {
 
   get activeFilterText(): string {
     if (this.month) return `Month: ${this.month}`;
+
     if (this.startDate || this.endDate) {
       return `${this.startDate || 'Start'} to ${this.endDate || 'End'}`;
     }
+
     return this.search ? 'Search Applied' : 'All Records';
   }
 
@@ -61,7 +63,9 @@ export class WarrantyRecordsComponent implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.message || 'Failed to load warranty records.');
+        this.error.set(
+          err?.error?.message || 'Failed to load warranty records.'
+        );
       }
     });
   }
@@ -91,6 +95,10 @@ export class WarrantyRecordsComponent implements OnInit {
     this.router.navigate(['/admin/warranty', qrId]);
   }
 
+  goDashboard(): void {
+    this.router.navigate(['/admin/dashboard']);
+  }
+
   exportExcel(): void {
     this.exporting.set(true);
     this.error.set('');
@@ -105,8 +113,8 @@ export class WarrantyRecordsComponent implements OnInit {
         const fileSuffix = this.month
           ? this.month
           : this.startDate || this.endDate
-            ? `${this.startDate || 'start'}-to-${this.endDate || 'end'}`
-            : 'all';
+          ? `${this.startDate || 'start'}-to-${this.endDate || 'end'}`
+          : 'all';
 
         link.href = url;
         link.download = `warranty-records-${fileSuffix}.xlsx`;

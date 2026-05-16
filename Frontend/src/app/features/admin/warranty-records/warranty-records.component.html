@@ -1,16 +1,35 @@
 <div class="warranty-admin-page">
-  <div class="page-header">
-    <div>
-      <h1>Warranty Records</h1>
-      <p>
-        View, search, filter, verify and export private warranty registration records.
-      </p>
+
+  <header class="top-header">
+    <div class="brand-section">
+      <img
+        src="/assets/logo.webp"
+        alt="Tunwal Logo"
+        class="brand-logo"
+        loading="lazy"
+      />
+
+      <div>
+        <h1>Warranty Records</h1>
+        <p>Private warranty registration management panel</p>
+      </div>
     </div>
 
-    <button class="export-btn" type="button" (click)="exportExcel()" [disabled]="exporting()">
-      {{ exporting() ? 'Exporting...' : 'Download Excel' }}
-    </button>
-  </div>
+    <div class="header-actions">
+      <button class="dashboard-btn" type="button" (click)="goDashboard()">
+        Dashboard
+      </button>
+
+      <button
+        class="export-btn"
+        type="button"
+        (click)="exportExcel()"
+        [disabled]="exporting()"
+      >
+        {{ exporting() ? 'Exporting...' : 'Download Excel' }}
+      </button>
+    </div>
+  </header>
 
   <div class="summary-grid">
     <div class="summary-card">
@@ -24,35 +43,38 @@
     </div>
 
     <div class="summary-card">
-      <span>Data Access</span>
+      <span>Access</span>
       <strong>Admin Only</strong>
     </div>
   </div>
 
   <div class="filter-card">
+
     <div class="filter-title">
-      <div>
-        <h2>Filter Records</h2>
-        <p>
-          Use search, date range, or month filter before downloading Excel.
-          Date filters are based on warranty registration date.
-        </p>
-      </div>
+      <h2>Filter Records</h2>
+
+      <p>
+        Search using QR ID, customer name, dealer, contact number,
+        chassis number, battery number or date range.
+      </p>
     </div>
 
     <div class="filter-grid">
-      <div class="filter-field wide">
+
+      <div class="filter-field search-field">
         <label>Search</label>
+
         <input
           type="text"
           [(ngModel)]="search"
-          placeholder="Search QR, customer, contact, chassis, motor, battery, dealer, state..."
+          placeholder="Search records..."
           (keyup.enter)="loadRecords()"
         />
       </div>
 
       <div class="filter-field">
         <label>From Date</label>
+
         <input
           type="date"
           [(ngModel)]="startDate"
@@ -62,6 +84,7 @@
 
       <div class="filter-field">
         <label>To Date</label>
+
         <input
           type="date"
           [(ngModel)]="endDate"
@@ -71,6 +94,7 @@
 
       <div class="filter-field">
         <label>Month</label>
+
         <input
           type="month"
           [(ngModel)]="month"
@@ -79,24 +103,25 @@
       </div>
     </div>
 
-    <div class="filter-help">
-      <span>
-        Tip: Selecting a month will clear From Date and To Date. Selecting a date range will clear Month.
-      </span>
-    </div>
-
     <div class="filter-actions">
-      <button type="button" class="search-btn" (click)="loadRecords()">
+
+      <button class="search-btn" type="button" (click)="loadRecords()">
         Apply Filter
       </button>
 
-      <button type="button" class="clear-btn" (click)="clearFilters()">
+      <button class="clear-btn" type="button" (click)="clearFilters()">
         Clear Filter
       </button>
 
-      <button type="button" class="excel-btn" (click)="exportExcel()" [disabled]="exporting()">
+      <button
+        class="excel-btn"
+        type="button"
+        (click)="exportExcel()"
+        [disabled]="exporting()"
+      >
         {{ exporting() ? 'Downloading...' : 'Download Filtered Excel' }}
       </button>
+
     </div>
   </div>
 
@@ -109,6 +134,7 @@
   </div>
 
   <div class="table-card" *ngIf="!loading()">
+
     <div class="table-header">
       <div>
         <h2>Warranty List</h2>
@@ -117,7 +143,9 @@
     </div>
 
     <div class="table-wrap">
+
       <table>
+
         <thead>
           <tr>
             <th>QR ID</th>
@@ -126,45 +154,59 @@
             <th>Scooter</th>
             <th>Battery</th>
             <th>Motor</th>
-            <th>Chassis</th>
             <th>Dealer</th>
             <th>State</th>
-            <th>Date of Sale</th>
-            <th>Registered At</th>
+            <th>Sale Date</th>
+            <th>Registered</th>
             <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
+
           <tr *ngFor="let record of records()">
+
             <td class="qr-cell">{{ record.qrId }}</td>
             <td>{{ record.customerName }}</td>
             <td>{{ record.contactNumber }}</td>
             <td>{{ record.scooterName }}</td>
             <td>{{ record.batteryNumber }}</td>
             <td>{{ record.motorNumber }}</td>
-            <td>{{ record.chassisNumber }}</td>
             <td>{{ record.dealerName }}</td>
             <td>{{ record.state }}</td>
             <td>{{ record.dateOfSale | date:'dd-MM-yyyy' }}</td>
             <td>{{ record.createdAt | date:'dd-MM-yyyy, h:mm a' }}</td>
+
             <td>
-              <button class="view-btn" type="button" (click)="openDetail(record.qrId)">
+              <button
+                class="view-btn"
+                type="button"
+                (click)="openDetail(record.qrId)"
+              >
                 View
               </button>
             </td>
+
           </tr>
 
           <tr *ngIf="records().length === 0">
-            <td colspan="12" class="empty-state">
+            <td colspan="11" class="empty-state">
+
               <div class="empty-box">
-                <strong>No warranty records found.</strong>
-                <span>Try clearing filters or checking another date range.</span>
+                <strong>No warranty records found</strong>
+
+                <span>
+                  Try changing filters or search terms.
+                </span>
               </div>
+
             </td>
           </tr>
+
         </tbody>
+
       </table>
+
     </div>
   </div>
 </div>
