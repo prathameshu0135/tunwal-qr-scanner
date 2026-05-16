@@ -1,10 +1,7 @@
 <div class="detail-page">
 
-  <!-- HEADER -->
-  <div class="page-header">
-
-    <div class="header-left">
-
+  <header class="topbar">
+    <div class="brand-area">
       <img
         src="/assets/logo.webp"
         alt="Tunwal Logo"
@@ -13,27 +10,29 @@
       />
 
       <div>
-        <span class="badge">Admin Panel</span>
-
-        <h1>Warranty Registration Detail</h1>
-
-        <p>
-          View and manage customer warranty registration details securely.
-        </p>
+        <h2>Tunwal E-Motors</h2>
+        <p>Warranty Management Portal</p>
       </div>
+    </div>
 
+    <button
+      type="button"
+      class="dashboard-btn"
+      routerLink="/admin/dashboard"
+    >
+      Dashboard
+    </button>
+  </header>
+
+  <div class="page-header">
+    <div>
+      <h1>Warranty Registration Detail</h1>
+      <p>
+        View and edit private warranty information for verification and support.
+      </p>
     </div>
 
     <div class="header-actions">
-
-      <button
-        type="button"
-        class="dashboard-btn"
-        routerLink="/admin/dashboard"
-      >
-        Dashboard
-      </button>
-
       <button
         type="button"
         class="print-btn"
@@ -57,50 +56,37 @@
         class="back-btn"
         (click)="goBack()"
       >
-        Back
+        Back to Records
       </button>
-
     </div>
-
   </div>
 
-  <!-- LOADING -->
   <div class="loading-box" *ngIf="loading()">
     Loading warranty detail...
   </div>
 
-  <!-- ERROR -->
   <div class="error-box" *ngIf="error()">
     {{ error() }}
   </div>
 
-  <!-- SUCCESS -->
   <div class="success-box" *ngIf="success()">
     {{ success() }}
   </div>
 
   <ng-container *ngIf="data() as item">
 
-    <!-- QR SUMMARY -->
     <section class="qr-summary-card">
-
-      <div class="summary-item">
+      <div>
         <span>QR ID</span>
         <strong>{{ item.qrId }}</strong>
       </div>
 
-      <div class="summary-item">
+      <div>
         <span>Registered At</span>
         <strong>
           {{ item.createdAt | date:'dd-MM-yyyy, h:mm a' }}
         </strong>
       </div>
-
-      <div class="summary-item">
-        <span>Customer</span>
-        <strong>{{ item.customerName || '-' }}</strong>
-      </div>
-
     </section>
 
     <!-- EDIT MODE -->
@@ -108,78 +94,69 @@
 
       <div class="edit-grid">
 
-        <!-- VEHICLE -->
         <section class="detail-card">
-
           <div class="card-heading">
-
             <div class="icon-box">1</div>
 
             <div>
               <h2>Vehicle Details</h2>
-              <p>Edit vehicle and component details.</p>
+              <p>Edit vehicle and component numbers.</p>
             </div>
-
           </div>
 
           <div class="edit-field">
             <label>Vehicle Name</label>
-            <input formControlName="scooterName" placeholder="Enter vehicle name" />
+            <input formControlName="scooterName" />
           </div>
 
           <div class="edit-field">
             <label>Vehicle Color</label>
-            <input formControlName="scooterColor" placeholder="Enter vehicle color" />
+            <input formControlName="scooterColor" />
           </div>
 
           <div class="edit-field">
             <label>Controller Number</label>
-            <input formControlName="controllerNumber" placeholder="Enter controller number" />
+            <input formControlName="controllerNumber" />
           </div>
 
           <div class="edit-field">
             <label>Battery Number</label>
-            <input formControlName="batteryNumber" placeholder="Enter battery number" />
+            <input formControlName="batteryNumber" />
           </div>
 
           <div class="edit-field">
             <label>Motor Number</label>
-            <input formControlName="motorNumber" placeholder="Enter motor number" />
+            <input formControlName="motorNumber" />
           </div>
 
           <div class="edit-field">
             <label>Chassis Number</label>
-            <input formControlName="chassisNumber" placeholder="Enter chassis number" />
+            <input formControlName="chassisNumber" />
           </div>
 
           <div class="edit-field">
             <label>Charger Number</label>
-            <input formControlName="chargerNumber" placeholder="Enter charger number" />
+            <input formControlName="chargerNumber" />
           </div>
-
         </section>
 
-        <!-- DEALER -->
         <section class="detail-card">
-
           <div class="card-heading">
-
             <div class="icon-box">2</div>
 
             <div>
               <h2>Dealer Details</h2>
-              <p>Dealer and sale information.</p>
+              <p>Edit dealer and sale details.</p>
             </div>
-
           </div>
 
           <div class="edit-field">
             <label>Dealer Name</label>
-            <input formControlName="dealerName" placeholder="Enter dealer name" />
+            <input formControlName="dealerName" />
           </div>
 
           <div class="edit-field">
-            <label>Date of Sale</label>
+            <label>Scooter Date of Sale</label>
             <input type="date" formControlName="dateOfSale" />
           </div>
 
@@ -187,7 +164,6 @@
             <label>State</label>
 
             <select formControlName="state">
-
               <option value="">Select State</option>
 
               <option
@@ -196,9 +172,7 @@
               >
                 {{ state }}
               </option>
-
             </select>
-
           </div>
 
           <div class="edit-field">
@@ -207,29 +181,23 @@
             <textarea
               rows="5"
               formControlName="dealerAddress"
-              placeholder="Enter dealer address"
             ></textarea>
           </div>
-
         </section>
 
-        <!-- CUSTOMER -->
         <section class="detail-card">
-
           <div class="card-heading">
-
             <div class="icon-box">3</div>
 
             <div>
               <h2>Customer Details</h2>
-              <p>Basic ownership information.</p>
+              <p>Edit basic customer ownership details.</p>
             </div>
-
           </div>
 
           <div class="edit-field">
             <label>Customer Name</label>
-            <input formControlName="customerName" placeholder="Enter customer name" />
+            <input formControlName="customerName" />
           </div>
 
           <div class="edit-field">
@@ -238,17 +206,13 @@
             <input
               maxlength="10"
               formControlName="contactNumber"
-              placeholder="Enter 10 digit mobile number"
             />
           </div>
-
         </section>
 
       </div>
 
-      <!-- ACTIONS -->
       <div class="edit-actions">
-
         <button
           type="button"
           class="cancel-btn"
@@ -265,7 +229,6 @@
         >
           {{ saving() ? 'Saving...' : 'Save Changes' }}
         </button>
-
       </div>
 
     </form>
@@ -275,18 +238,15 @@
 
       <div class="detail-grid">
 
-        <!-- VEHICLE -->
         <section class="detail-card">
 
           <div class="card-heading">
-
             <div class="icon-box">1</div>
 
             <div>
               <h2>Vehicle Details</h2>
-              <p>Vehicle identification information.</p>
+              <p>Vehicle identification and component numbers.</p>
             </div>
-
           </div>
 
           <div class="info-list">
@@ -327,21 +287,17 @@
             </div>
 
           </div>
-
         </section>
 
-        <!-- DEALER -->
         <section class="detail-card">
 
           <div class="card-heading">
-
             <div class="icon-box">2</div>
 
             <div>
               <h2>Dealer Details</h2>
-              <p>Dealer and vehicle sale information.</p>
+              <p>Dealer and sale information.</p>
             </div>
-
           </div>
 
           <div class="info-list">
@@ -352,8 +308,10 @@
             </div>
 
             <div class="info-row">
-              <span>Date of Sale</span>
-              <strong>{{ item.dateOfSale | date:'dd-MM-yyyy' }}</strong>
+              <span>Vehicle Date of Sale</span>
+              <strong>
+                {{ item.dateOfSale | date:'dd-MM-yyyy' }}
+              </strong>
             </div>
 
             <div class="info-row">
@@ -367,21 +325,17 @@
             </div>
 
           </div>
-
         </section>
 
-        <!-- CUSTOMER -->
         <section class="detail-card">
 
           <div class="card-heading">
-
             <div class="icon-box">3</div>
 
             <div>
               <h2>Customer Details</h2>
-              <p>Customer ownership information.</p>
+              <p>Basic customer ownership details.</p>
             </div>
-
           </div>
 
           <div class="info-list">
@@ -397,7 +351,6 @@
             </div>
 
           </div>
-
         </section>
 
       </div>
