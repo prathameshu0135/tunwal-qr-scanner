@@ -64,8 +64,8 @@
 }
 
 .dashboard-btn {
-  background: #ffffff;
-  color: #0f172a;
+  background: #fbfcfc;
+  color: #005cbb;
   border: 1px solid #dbe4ee;
 }
 
@@ -74,8 +74,8 @@
 }
 
 .export-btn {
-  background: #0f766e;
-  color: #ffffff;
+  background: #fbfcfc;
+  color: #005cbb;
   box-shadow: 0 10px 24px rgba(15, 118, 110, 0.2);
 }
 
@@ -190,18 +190,18 @@
 }
 
 .search-btn {
-  background: #0f766e;
-  color: #ffffff;
+  background: #fbfcfc;
+  color: #005cbb;
 }
 
 .clear-btn {
-  background: #111827;
-  color: #ffffff;
+  background: #fbfcfc;
+  color: #005cbb;
 }
 
 .excel-btn {
-  background: #0284c7;
-  color: #ffffff;
+  background: #fbfcfc;
+  color: #005cbb;
 }
 
 /* STATUS */
