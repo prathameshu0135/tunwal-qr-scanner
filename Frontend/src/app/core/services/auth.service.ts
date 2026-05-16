@@ -9,11 +9,13 @@ import { AdminLoginResponse } from '../../shared/models/api.models';
   providedIn: 'root'
 })
 export class AuthService {
+
   private readonly tokenKey = 'admin_token';
   private readonly adminKey = 'admin_user';
 
+  // Session based login
   private readonly tokenSignal = signal<string | null>(
-    localStorage.getItem(this.tokenKey)
+    sessionStorage.getItem(this.tokenKey)
   );
 
   readonly isLoggedIn = computed(() => !!this.tokenSignal());
@@ -21,26 +23,39 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-login(username: string, password: string) {
-  const cleanUsername = String(username || '').trim();
+  login(username: string, password: string) {
 
-  return this.http
-    .post<AdminLoginResponse>(`${environment.apiBaseUrl}/admin/login`, {
-      username: cleanUsername,
-      password
-    })
-    .pipe(
-      tap((res) => {
-        localStorage.setItem(this.tokenKey, res.token);
-        localStorage.setItem(this.adminKey, JSON.stringify(res.admin));
-        this.tokenSignal.set(res.token);
-      })
-    );
-}
+    const cleanUsername = String(username || '').trim();
+
+    return this.http
+      .post<AdminLoginResponse>(
+        `${environment.apiBaseUrl}/admin/login`,
+        {
+          username: cleanUsername,
+          password
+        }
+      )
+      .pipe(
+        tap((res) => {
+
+          // Save only for active browser session
+          sessionStorage.setItem(this.tokenKey, res.token);
+
+          sessionStorage.setItem(
+            this.adminKey,
+            JSON.stringify(res.admin)
+          );
+
+          this.tokenSignal.set(res.token);
+        })
+      );
+  }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.adminKey);
+
+    sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.adminKey);
+
     this.tokenSignal.set(null);
   }
 
@@ -49,7 +64,8 @@ login(username: string, password: string) {
   }
 
   getAdmin(): any | null {
-    const raw = localStorage.getItem(this.adminKey);
+
+    const raw = sessionStorage.getItem(this.adminKey);
 
     if (!raw) {
       return null;
@@ -58,7 +74,9 @@ login(username: string, password: string) {
     try {
       return JSON.parse(raw);
     } catch {
-      localStorage.removeItem(this.adminKey);
+
+      sessionStorage.removeItem(this.adminKey);
+
       return null;
     }
   }
