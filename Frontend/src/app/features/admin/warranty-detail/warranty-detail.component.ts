@@ -55,7 +55,14 @@ export class WarrantyDetailComponent implements OnInit {
     'Uttar Pradesh',
     'Uttarakhand',
     'West Bengal',
-    'Delhi'
+    'Andaman and Nicobar Islands',
+    'Chandigarh',
+    'Dadra and Nagar Haveli and Daman and Diu',
+    'Delhi',
+    'Jammu and Kashmir',
+    'Ladakh',
+    'Lakshadweep',
+    'Puducherry'
   ];
 
   form = this.fb.group({
@@ -66,24 +73,19 @@ export class WarrantyDetailComponent implements OnInit {
     motorNumber: ['', Validators.required],
     chassisNumber: ['', Validators.required],
     chargerNumber: ['', Validators.required],
-
     dealerName: ['', Validators.required],
     dealerAddress: ['', Validators.required],
     state: ['', Validators.required],
     dateOfSale: ['', Validators.required],
-
     customerName: ['', Validators.required],
-    contactNumber: [
-      '',
-      [Validators.required, Validators.pattern(/^[0-9]{10}$/)]
-    ]
+    contactNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]]
   });
 
   ngOnInit(): void {
     this.qrId = this.route.snapshot.paramMap.get('qrId') || '';
 
     if (!this.qrId) {
-      this.error.set('QR ID missing');
+      this.error.set('QR ID missing.');
       return;
     }
 
@@ -98,48 +100,36 @@ export class WarrantyDetailComponent implements OnInit {
     this.api.getWarrantyDetail(this.qrId).subscribe({
       next: (res) => {
         this.loading.set(false);
-
         this.data.set(res.data);
-
         this.patchForm(res.data);
       },
-
       error: (err) => {
         this.loading.set(false);
-
-        this.error.set(
-          err?.error?.message || 'Failed to load warranty details'
-        );
+        this.error.set(err?.error?.message || 'Warranty detail not found.');
       }
     });
   }
 
   patchForm(item: any): void {
     this.form.patchValue({
-      scooterName: item?.scooterName || '',
-      scooterColor: item?.scooterColor || '',
-      controllerNumber: item?.controllerNumber || '',
-      batteryNumber: item?.batteryNumber || '',
-      motorNumber: item?.motorNumber || '',
-      chassisNumber: item?.chassisNumber || '',
-      chargerNumber: item?.chargerNumber || '',
-
-      dealerName: item?.dealerName || '',
-      dealerAddress: item?.dealerAddress || '',
-      state: item?.state || '',
-
-      dateOfSale: item?.dateOfSale
-        ? String(item.dateOfSale).slice(0, 10)
-        : '',
-
-      customerName: item?.customerName || '',
-      contactNumber: item?.contactNumber || ''
+      scooterName: item.scooterName || '',
+      scooterColor: item.scooterColor || '',
+      controllerNumber: item.controllerNumber || '',
+      batteryNumber: item.batteryNumber || '',
+      motorNumber: item.motorNumber || '',
+      chassisNumber: item.chassisNumber || '',
+      chargerNumber: item.chargerNumber || '',
+      dealerName: item.dealerName || '',
+      dealerAddress: item.dealerAddress || '',
+      state: item.state || '',
+      dateOfSale: item.dateOfSale ? String(item.dateOfSale).slice(0, 10) : '',
+      customerName: item.customerName || '',
+      contactNumber: item.contactNumber || ''
     });
   }
 
   enableEdit(): void {
     this.editMode.set(true);
-
     this.error.set('');
     this.success.set('');
   }
@@ -152,7 +142,6 @@ export class WarrantyDetailComponent implements OnInit {
     }
 
     this.editMode.set(false);
-
     this.error.set('');
     this.success.set('');
   }
@@ -160,50 +149,31 @@ export class WarrantyDetailComponent implements OnInit {
   saveChanges(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-
-      this.error.set('Please fill all required fields correctly');
-
+      this.error.set('Please fill all required fields correctly.');
       return;
     }
 
     this.saving.set(true);
-
     this.error.set('');
     this.success.set('');
 
-    this.api
-      .updateWarrantyDetail(this.qrId, this.form.getRawValue())
-      .subscribe({
-        next: (res) => {
-          this.saving.set(false);
-
-          this.editMode.set(false);
-
-          this.data.set(res.data);
-
-          this.patchForm(res.data);
-
-          this.success.set(
-            res.message || 'Warranty details updated successfully'
-          );
-        },
-
-        error: (err) => {
-          this.saving.set(false);
-
-          this.error.set(
-            err?.error?.message || 'Failed to update warranty details'
-          );
-        }
-      });
+    this.api.updateWarrantyDetail(this.qrId, this.form.getRawValue()).subscribe({
+      next: (res) => {
+        this.saving.set(false);
+        this.editMode.set(false);
+        this.data.set(res.data);
+        this.patchForm(res.data);
+        this.success.set(res.message || 'Warranty record updated successfully.');
+      },
+      error: (err) => {
+        this.saving.set(false);
+        this.error.set(err?.error?.message || 'Failed to update warranty record.');
+      }
+    });
   }
 
   goBack(): void {
     this.router.navigate(['/admin/warranty-records']);
-  }
-
-  goDashboard(): void {
-    this.router.navigate(['/admin/dashboard']);
   }
 
   printPage(): void {
