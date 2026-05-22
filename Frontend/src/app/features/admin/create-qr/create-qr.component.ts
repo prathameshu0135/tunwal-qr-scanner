@@ -50,7 +50,7 @@ export class CreateQrComponent {
     return count === 1 ? '1 QR code generated' : `${count} QR codes generated`;
   });
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {}
 
   // =========================
   // SINGLE QR
@@ -201,79 +201,75 @@ export class CreateQrComponent {
       <head>
         <title>Print QR Sheet</title>
         <style>
-          @page {
-  size: auto;
-  margin: 4mm;
-}
+          * {
+            box-sizing: border-box;
+          }
 
-* {
-  box-sizing: border-box;
-}
+          body {
+            margin: 0;
+            padding: 12px;
+            font-family: Arial, sans-serif;
+          }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-}
+          .title {
+            text-align: center;
+            margin-bottom: 12px;
+          }
 
-.title {
-  display: none;
-}
+          .title h2 {
+            margin: 0 0 4px;
+            font-size: 18px;
+          }
 
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4mm;
-  align-items: flex-start;
-}
+          .title p {
+            margin: 0;
+            font-size: 11px;
+            color: #555;
+          }
 
-.item {
-  width: 40mm;
-  height: 40mm;
+          .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+          }
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+          .item {
+            text-align: center;
+            border: 1px dashed #999;
+            border-radius: 8px;
+            padding: 10px;
+            break-inside: avoid;
+          }
 
-  border: 1px dashed #999;
-  overflow: hidden;
+          img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+          }
 
-  page-break-inside: avoid;
-}
+          .qr-id {
+            margin: 6px 0 0;
+            font-size: 11px;
+            font-weight: bold;
+            word-break: break-all;
+          }
 
-img {
-  width: 28mm;
-  height: 28mm;
-  object-fit: contain;
-}
+          .note {
+            margin: 4px 0 0;
+            font-size: 9px;
+            color: #555;
+          }
 
-.qr-id {
-  margin-top: 2mm;
-  font-size: 8pt;
-  font-weight: bold;
-  text-align: center;
-  line-height: 1;
-}
+          @media print {
+            body {
+              padding: 8px;
+            }
 
-.note {
-  display: none;
-}
-
-@media print {
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  .grid {
-    gap: 2mm;
-  }
-
-  .item {
-    break-inside: avoid;
-  }
-}
+            .item {
+              page-break-inside: avoid;
+            }
+          }
+        </style>
       </head>
       <body>
         <div class="title">
@@ -283,16 +279,16 @@ img {
 
         <div class="grid">
           ${data
-        .map(
-          (qr) => `
+            .map(
+              (qr) => `
                 <div class="item">
                   <img src="${qr.qrImageDataUrl}" />
                   <p class="qr-id">${qr.qrId}</p>
                   <p class="note">Scan to register warranty / emergency profile</p>
                 </div>
               `
-        )
-        .join('')}
+            )
+            .join('')}
         </div>
       </body>
       </html>
