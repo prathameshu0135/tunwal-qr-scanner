@@ -201,78 +201,79 @@ export class CreateQrComponent {
       <head>
         <title>Print QR Sheet</title>
         <style>
-          * {
-            box-sizing: border-box;
-          }
-
-          body {
-            margin: 0;
-            padding: 12px;
-            font-family: Arial, sans-serif;
-          }
-
-          .title {
-            text-align: center;
-            margin-bottom: 12px;
-          }
-
-          .title h2 {
-            margin: 0 0 4px;
-            font-size: 18px;
-          }
-
-          .title p {
-            margin: 0;
-            font-size: 11px;
-            color: #555;
-          }
-
-          .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-          }
-
-          .item {
-  width: 140px;
-  min-width: 140px;
-  text-align: center;
-  border: 1px dashed #999;
-  border-radius: 8px;
-  padding: 8px;
-  break-inside: avoid;
+          @page {
+  size: auto;
+  margin: 4mm;
 }
-          }
 
-          img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-          }
+* {
+  box-sizing: border-box;
+}
 
-          .qr-id {
-            margin: 6px 0 0;
-            font-size: 11px;
-            font-weight: bold;
-            word-break: break-all;
-          }
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
 
-          .note {
-            margin: 4px 0 0;
-            font-size: 9px;
-            color: #555;
-          }
+.title {
+  display: none;
+}
 
-          @media print {
-            body {
-              padding: 8px;
-            }
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4mm;
+  align-items: flex-start;
+}
 
-            .item {
-              page-break-inside: avoid;
-            }
-          }
-        </style>
+.item {
+  width: 40mm;
+  height: 40mm;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dashed #999;
+  overflow: hidden;
+
+  page-break-inside: avoid;
+}
+
+img {
+  width: 28mm;
+  height: 28mm;
+  object-fit: contain;
+}
+
+.qr-id {
+  margin-top: 2mm;
+  font-size: 8pt;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+}
+
+.note {
+  display: none;
+}
+
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .grid {
+    gap: 2mm;
+  }
+
+  .item {
+    break-inside: avoid;
+  }
+}
       </head>
       <body>
         <div class="title">
