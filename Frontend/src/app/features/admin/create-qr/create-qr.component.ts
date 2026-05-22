@@ -50,7 +50,7 @@ export class CreateQrComponent {
     return count === 1 ? '1 QR code generated' : `${count} QR codes generated`;
   });
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
 
   // =========================
   // SINGLE QR
@@ -234,16 +234,19 @@ export class CreateQrComponent {
           }
 
           .item {
-            text-align: center;
-            border: 1px dashed #999;
-            border-radius: 8px;
-            padding: 10px;
-            break-inside: avoid;
+  width: 140px;
+  min-width: 140px;
+  text-align: center;
+  border: 1px dashed #999;
+  border-radius: 8px;
+  padding: 8px;
+  break-inside: avoid;
+}
           }
 
           img {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
           }
 
@@ -279,16 +282,16 @@ export class CreateQrComponent {
 
         <div class="grid">
           ${data
-            .map(
-              (qr) => `
+        .map(
+          (qr) => `
                 <div class="item">
                   <img src="${qr.qrImageDataUrl}" />
                   <p class="qr-id">${qr.qrId}</p>
                   <p class="note">Scan to register warranty / emergency profile</p>
                 </div>
               `
-            )
-            .join('')}
+        )
+        .join('')}
         </div>
       </body>
       </html>
