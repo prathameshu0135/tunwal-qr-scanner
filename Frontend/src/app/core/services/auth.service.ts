@@ -13,15 +13,21 @@ export class AuthService {
   private readonly tokenKey = 'admin_token';
   private readonly adminKey = 'admin_user';
 
-  // Session based login
   private readonly tokenSignal = signal<string | null>(
     sessionStorage.getItem(this.tokenKey)
   );
 
-  readonly isLoggedIn = computed(() => !!this.tokenSignal());
-  readonly token = computed(() => this.tokenSignal());
+  readonly isLoggedIn = computed(() => {
+    return !!this.tokenSignal();
+  });
 
-  constructor(private http: HttpClient) {}
+  readonly token = computed(() => {
+    return this.tokenSignal();
+  });
+
+  constructor(private http: HttpClient) {
+    this.validateStoredToken();
+  }
 
   login(username: string, password: string) {
 
@@ -38,13 +44,15 @@ export class AuthService {
       .pipe(
         tap((res) => {
 
-          // Save only for active browser session
-          sessionStorage.setItem(this.tokenKey, res.token);
+          if (!res?.token) {
+            throw new Error('Token missing from server response');
+          }
 
-          sessionStorage.setItem(
-            this.adminKey,
-            JSON.stringify(res.admin)
-          );
+          sessionStorage.setItem(this.tokenKey, res.token);
+          sessionStorage.setItem(this.adminKey, JSON.stringify(res.admin));
+
+          localStorage.removeItem(this.tokenKey);
+          localStorage.removeItem(this.adminKey);
 
           this.tokenSignal.set(res.token);
         })
@@ -55,6 +63,9 @@ export class AuthService {
 
     sessionStorage.removeItem(this.tokenKey);
     sessionStorage.removeItem(this.adminKey);
+
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.adminKey);
 
     this.tokenSignal.set(null);
   }
@@ -78,6 +89,15 @@ export class AuthService {
       sessionStorage.removeItem(this.adminKey);
 
       return null;
+    }
+  }
+
+  private validateStoredToken(): void {
+
+    const token = sessionStorage.getItem(this.tokenKey);
+
+    if (!token || token === 'undefined' || token === 'null') {
+      this.logout();
     }
   }
 }
