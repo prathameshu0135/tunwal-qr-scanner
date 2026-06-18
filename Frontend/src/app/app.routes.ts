@@ -104,14 +104,6 @@ export const routes: Routes = [
   },
 
   {
-    path: 'verify-otp/:qrId',
-    loadComponent: () =>
-      import('./features/public/verify-otp/verify-otp.component').then(
-        (m) => m.VerifyOtpComponent
-      )
-  },
-
-  {
     path: 'warranty/:qrId',
     loadComponent: () =>
       import('./features/public/warranty/warranty.component').then(
@@ -132,14 +124,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/public/register/register.component').then(
         (m) => m.RegisterComponent
-      )
-  },
-
-  {
-    path: 'emergency/:qrId',
-    loadComponent: () =>
-      import('./features/public/emergency/emergency.component').then(
-        (m) => m.EmergencyComponent
       )
   },
 
