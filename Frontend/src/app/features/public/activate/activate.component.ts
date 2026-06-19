@@ -43,15 +43,20 @@ export class ActivateComponent implements OnInit {
 
     this.api.getQrStatus(this.qrId).subscribe({
    next: (res) => {
-  console.log('API RESPONSE:', res);
+  console.log('API SUCCESS');
+  console.log(res);
 
   const data = res.data || res;
 
-  console.log('DATA:', data);
-  console.log('QR:', this.qrId);
+  console.log('BEFORE NAVIGATION');
 
-  alert('API SUCCESS');
+  if (data.warrantyStatus === 'registered') {
+    console.log('GO WARRANTY SUCCESS');
+    this.router.navigate(['/warranty-success', this.qrId]);
+    return;
+  }
 
+  console.log('GO REGISTER');
   this.router.navigate(['/register', this.qrId]);
 },
       
