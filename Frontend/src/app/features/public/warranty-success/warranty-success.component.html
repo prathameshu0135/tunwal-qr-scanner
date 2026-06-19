@@ -20,13 +20,12 @@
     <mat-card class="success-card">
       <div class="success-icon">✓</div>
 
-      <span class="badge">Warranty Submitted</span>
+      <span class="badge">Warranty Registered</span>
 
       <h1>Warranty Registration Completed</h1>
 
       <p class="main-text">
-        Your vehicle warranty details have been submitted successfully.
-        Warranty data is private and visible only to authorized admin users.
+        Your vehicle warranty registration has been completed successfully.
       </p>
 
       <div class="qr-summary">
@@ -34,65 +33,19 @@
         <strong>{{ qrId }}</strong>
       </div>
 
-      <ng-container *ngIf="!skipped(); else skippedState">
-        <div class="next-box">
-          <h3>Emergency Profile is Optional</h3>
-          <p>
-            You may activate the Emergency QR Profile for safety assistance.
-            This can include medical details and emergency contacts. This step is not mandatory.
-          </p>
-        </div>
+      <div class="final-box">
+        <div class="final-icon">✓</div>
 
-        <div class="choice-grid">
-          <button
-            mat-raised-button
-            color="primary"
-            class="primary-action"
-            type="button"
-            (click)="activateEmergency()"
-            [disabled]="loading()"
-          >
-            Activate Emergency Profile
-          </button>
+        <h3>Registration Successful</h3>
 
-          <button
-            mat-stroked-button
-            color="primary"
-            class="secondary-action"
-            type="button"
-            (click)="skipEmergency()"
-            [disabled]="loading()"
-          >
-            {{ loading() ? 'Please wait...' : 'Skip for Now' }}
-          </button>
-        </div>
-      </ng-container>
-
-      <ng-template #skippedState>
-        <div class="final-box">
-          <div class="final-icon">✓</div>
-
-          <h3>Warranty Registration Completed</h3>
-
-          <p>
-            Emergency profile has been skipped for now. Your QR remains valid for
-            warranty records. You can activate the emergency profile later using the same QR.
-          </p>
-
-          <button
-            mat-raised-button
-            color="primary"
-            type="button"
-            class="primary-action"
-            (click)="activateLater()"
-          >
-            Activate Emergency Later
-          </button>
-        </div>
-      </ng-template>
+        <p>
+          Thank you for registering your vehicle warranty.
+          Your warranty record has been saved successfully.
+        </p>
+      </div>
 
       <div class="privacy-note">
-        Emergency contacts are not required for warranty registration.
+        Warranty details are securely stored and visible only to authorized administrators.
       </div>
 
       <div class="message success-message" *ngIf="message()">
@@ -102,6 +55,16 @@
       <div class="message error-message" *ngIf="error()">
         {{ error() }}
       </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="primary-action"
+        type="button"
+        (click)="goHome()"
+      >
+        Finish
+      </button>
     </mat-card>
   </main>
 </div>

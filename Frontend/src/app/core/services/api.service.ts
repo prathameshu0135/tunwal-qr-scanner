@@ -3,10 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 import {
-  CustomerRegistrationResponse,
   DashboardResponse,
-  EmergencyResponse,
-  OtpSendResponse,
   QrItem,
   QrStatusResponse
 } from '../../shared/models/api.models';
@@ -31,7 +28,9 @@ export class ApiService {
   // -------------------------
 
   getDashboard() {
-    return this.http.get<DashboardResponse>(`${this.baseUrl}/admin/dashboard`);
+    return this.http.get<DashboardResponse>(
+      `${this.baseUrl}/admin/dashboard`
+    );
   }
 
   // -------------------------
@@ -55,7 +54,9 @@ export class ApiService {
 
   getQrList(search?: string) {
     const query = search ? `?search=${encodeURIComponent(search)}` : '';
-    return this.http.get<QrItem[]>(`${this.baseUrl}/admin/qr-list${query}`);
+    return this.http.get<QrItem[]>(
+      `${this.baseUrl}/admin/qr-list${query}`
+    );
   }
 
   getQrById(id: string) {
@@ -87,35 +88,22 @@ export class ApiService {
     );
   }
 
+  updateQrDetails(id: string, payload: any) {
+    return this.http.patch<{
+      success: boolean;
+      message: string;
+      data: any;
+    }>(`${this.baseUrl}/admin/qr/${id}/details`, payload);
+  }
+
   // -------------------------
-  // Public QR / OTP Flow
+  // Public QR Flow
   // -------------------------
 
   getQrStatus(qrId: string) {
     return this.http.get<QrStatusResponse>(
       `${this.baseUrl}/public/qr/${qrId}/status`
     );
-  }
-
-  sendOtp(qrId: string, mobile: string) {
-    return this.http.post<OtpSendResponse>(`${this.baseUrl}/public/otp/send`, {
-      qrId,
-      mobile
-    });
-  }
-
-  verifyOtp(qrId: string, mobile: string, otp: string) {
-    return this.http.post<{
-      success?: boolean;
-      message: string;
-      qrId: string;
-      mobile: string;
-      verified: boolean;
-    }>(`${this.baseUrl}/public/otp/verify`, {
-      qrId,
-      mobile,
-      otp
-    });
   }
 
   // -------------------------
@@ -151,54 +139,6 @@ export class ApiService {
   }
 
   // -------------------------
-  // Public Emergency Flow
-  // -------------------------
-
-  registerCustomer(payload: any) {
-    return this.http.post<CustomerRegistrationResponse>(
-      `${this.baseUrl}/public/register`,
-      payload
-    );
-  }
-
-  getEmergencyData(qrId: string) {
-    return this.http.get<EmergencyResponse>(
-      `${this.baseUrl}/public/emergency/${qrId}`
-    );
-  }
-
-  skipEmergency(qrId: string) {
-    return this.http.post<{
-      success: boolean;
-      message: string;
-      data: {
-        qrId: string;
-        status: string;
-        warrantyStatus: string;
-        emergencyStatus: string;
-      };
-    }>(`${this.baseUrl}/public/emergency/skip/${qrId}`, {});
-  }
-
-  sendEmergencyAlert(qrId: string, latitude?: number, longitude?: number) {
-    return this.http.post(`${this.baseUrl}/public/emergency/alert`, {
-      qrId,
-      latitude,
-      longitude
-    });
-  }
-
-  createScanLog(payload: {
-    qrId: string;
-    scanType: string;
-    latitude?: number | null;
-    longitude?: number | null;
-    alertSent?: boolean;
-  }) {
-    return this.http.post(`${this.baseUrl}/public/scan-log`, payload);
-  }
-
-  // -------------------------
   // Admin Warranty Management
   // -------------------------
 
@@ -222,7 +162,6 @@ export class ApiService {
     }
 
     const query = params.toString();
-
     return query ? `?${query}` : '';
   }
 
@@ -248,23 +187,20 @@ export class ApiService {
       success: boolean;
       message: string;
       data: any;
-    }>(`${this.baseUrl}/admin/warranty/${encodeURIComponent(qrId)}`, payload);
+    }>(
+      `${this.baseUrl}/admin/warranty/${encodeURIComponent(qrId)}`,
+      payload
+    );
   }
 
   downloadWarrantyExcel(filters?: WarrantyFilterParams) {
     const query = this.buildWarrantyQuery(filters);
 
-    return this.http.get(`${this.baseUrl}/admin/warranty/export/excel${query}`, {
-      responseType: 'blob'
-    });
+    return this.http.get(
+      `${this.baseUrl}/admin/warranty/export/excel${query}`,
+      {
+        responseType: 'blob'
+      }
+    );
   }
-
-  updateQrDetails(id: string, payload: any) {
-  return this.http.patch<{
-    success: boolean;
-    message: string;
-    data: any;
-  }>(`${this.baseUrl}/admin/qr/${id}/details`, payload);
-}
-
 }
