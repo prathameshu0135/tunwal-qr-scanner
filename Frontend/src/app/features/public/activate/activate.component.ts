@@ -43,31 +43,18 @@ export class ActivateComponent implements OnInit {
 
     this.api.getQrStatus(this.qrId).subscribe({
    next: (res) => {
+  console.log('API RESPONSE:', res);
+
   const data = res.data || res;
 
-  this.status.set(data.status || '');
-  this.warrantyStatus.set(data.warrantyStatus || 'pending');
+  console.log('DATA:', data);
+  console.log('QR:', this.qrId);
 
-  this.loading.set(false);
-
-  if (data.status === 'blocked') {
-    this.router.navigate(['/blocked', this.qrId]);
-    return;
-  }
-
-  if (data.status === 'expired' || data.status === 'scrapped') {
-    this.error.set(`This QR is ${data.status}. Please contact support.`);
-    return;
-  }
-
-  if (data.warrantyStatus === 'registered') {
-    this.router.navigate(['/warranty-success', this.qrId]);
-    return;
-  }
+  alert('API SUCCESS');
 
   this.router.navigate(['/register', this.qrId]);
 },
-    
+      
       error: (err) => {
         this.error.set(
           err?.error?.message || 'Failed to load QR details.'
