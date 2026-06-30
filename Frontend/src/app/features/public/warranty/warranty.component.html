@@ -1,23 +1,26 @@
 <div class="warranty-page">
+
   <header class="company-header">
     <div class="company-left">
-      <img src="assets/logo.webp" alt="Company Logo" class="company-logo" />
+      <img src="assets/logo.webp" alt="Tunwal E-Motors" class="company-logo">
 
       <div>
         <h2>Tunwal E-Motors</h2>
-        <p>Official Warranty Registration Portal</p>
+        <p>Official Vehicle Warranty Registration</p>
       </div>
     </div>
-
   </header>
 
   <div class="page-header">
+
     <div>
       <span class="badge">Warranty Registration</span>
-      <h1>Register Vehicle Warranty</h1>
+
+      <h1>Vehicle Warranty Registration</h1>
+
       <p>
-        Please fill the vehicle, dealer and customer details carefully.
-        These details will be used for future warranty claims.
+        Fill in the warranty information below.
+        All details should match the vehicle and dealer records.
       </p>
     </div>
 
@@ -25,23 +28,36 @@
       <span>QR ID</span>
       <strong>{{ qrId }}</strong>
     </div>
+
   </div>
-  
+
   <mat-card class="form-card">
-    <form [formGroup]="form" (ngSubmit)="submitWarranty()">
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submitWarranty()">
+
+      <!-- ================= Vehicle ================= -->
+
       <section class="form-section">
+
         <div class="section-title">
           <div class="step-number">1</div>
+
           <div>
             <h2>Vehicle Details</h2>
-            <p>Enter numbers exactly as printed on the vehicle parts or documents.</p>
+            <p>Enter the vehicle information exactly as printed.</p>
           </div>
         </div>
 
         <div class="field-grid">
+
           <mat-form-field appearance="outline">
             <mat-label>Vehicle Name</mat-label>
-            <input matInput formControlName="scooterName" placeholder="Example:Mini Lithino" />
+            <input
+              matInput
+              formControlName="scooterName">
+
             <mat-error *ngIf="form.controls.scooterName.hasError('required')">
               Vehicle name is required
             </mat-error>
@@ -49,7 +65,10 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Vehicle Color</mat-label>
-            <input matInput formControlName="scooterColor" placeholder="Example: White" />
+            <input
+              matInput
+              formControlName="scooterColor">
+
             <mat-error *ngIf="form.controls.scooterColor.hasError('required')">
               Vehicle color is required
             </mat-error>
@@ -57,7 +76,10 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Controller Number</mat-label>
-            <input matInput formControlName="controllerNumber" placeholder="Enter controller number" />
+            <input
+              matInput
+              formControlName="controllerNumber">
+
             <mat-error *ngIf="form.controls.controllerNumber.hasError('required')">
               Controller number is required
             </mat-error>
@@ -65,7 +87,10 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Battery Number</mat-label>
-            <input matInput formControlName="batteryNumber" placeholder="Enter battery number" />
+            <input
+              matInput
+              formControlName="batteryNumber">
+
             <mat-error *ngIf="form.controls.batteryNumber.hasError('required')">
               Battery number is required
             </mat-error>
@@ -73,7 +98,10 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Motor Number</mat-label>
-            <input matInput formControlName="motorNumber" placeholder="Enter motor number" />
+            <input
+              matInput
+              formControlName="motorNumber">
+
             <mat-error *ngIf="form.controls.motorNumber.hasError('required')">
               Motor number is required
             </mat-error>
@@ -81,7 +109,10 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Chassis Number</mat-label>
-            <input matInput formControlName="chassisNumber" placeholder="Enter chassis number" />
+            <input
+              matInput
+              formControlName="chassisNumber">
+
             <mat-error *ngIf="form.controls.chassisNumber.hasError('required')">
               Chassis number is required
             </mat-error>
@@ -89,120 +120,198 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Charger Number</mat-label>
-            <input matInput formControlName="chargerNumber" placeholder="Enter charger number" />
+            <input
+              matInput
+              formControlName="chargerNumber">
+
             <mat-error *ngIf="form.controls.chargerNumber.hasError('required')">
               Charger number is required
             </mat-error>
           </mat-form-field>
+
         </div>
+
       </section>
 
+      <!-- ================= Dealer ================= -->
+
       <section class="form-section">
+
         <div class="section-title">
           <div class="step-number">2</div>
+
           <div>
             <h2>Dealer Details</h2>
-            <p>Enter dealer and sale information for warranty verification.</p>
+            <p>Enter the dealer information.</p>
           </div>
         </div>
 
         <div class="field-grid">
+
           <mat-form-field appearance="outline">
             <mat-label>Dealer Name</mat-label>
-            <input matInput formControlName="dealerName" placeholder= />
+
+            <input
+              matInput
+              formControlName="dealerName"
+              placeholder="Dealer Name">
+
             <mat-error *ngIf="form.controls.dealerName.hasError('required')">
               Dealer name is required
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Scooter Date of Sale</mat-label>
 
-            <input matInput [matDatepicker]="saleDatePicker" formControlName="dateOfSale" placeholder="Choose sale date"
-              readonly />
+            <mat-label>Date of Sale</mat-label>
 
-            <mat-datepicker-toggle matIconSuffix [for]="saleDatePicker"></mat-datepicker-toggle>
+            <input
+              matInput
+              [matDatepicker]="saleDatePicker"
+              formControlName="dateOfSale"
+              readonly>
+
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="saleDatePicker">
+            </mat-datepicker-toggle>
+
             <mat-datepicker #saleDatePicker></mat-datepicker>
 
             <mat-error *ngIf="form.controls.dateOfSale.hasError('required')">
-              Date of sale is required
+              Sale date is required
             </mat-error>
+
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
             <mat-label>Dealer Address</mat-label>
-            <textarea matInput rows="3" formControlName="dealerAddress"
-              placeholder="Enter complete dealer address"></textarea>
+
+            <textarea
+              matInput
+              rows="3"
+              formControlName="dealerAddress">
+            </textarea>
+
             <mat-error *ngIf="form.controls.dealerAddress.hasError('required')">
               Dealer address is required
             </mat-error>
+
           </mat-form-field>
 
           <mat-form-field appearance="outline">
+
             <mat-label>State</mat-label>
+
             <mat-select formControlName="state">
-              <mat-option value="">Select State</mat-option>
-              <mat-option *ngFor="let state of states" [value]="state">
+
+              <mat-option
+                *ngFor="let state of states"
+                [value]="state">
+
                 {{ state }}
+
               </mat-option>
+
             </mat-select>
+
             <mat-error *ngIf="form.controls.state.hasError('required')">
               State is required
             </mat-error>
+
           </mat-form-field>
+
         </div>
+
       </section>
 
+      <!-- ================= Customer ================= -->
+
       <section class="form-section">
+
         <div class="section-title">
           <div class="step-number">3</div>
+
           <div>
             <h2>Customer Details</h2>
-            <p>Only basic customer details are required for warranty registration.</p>
+            <p>Enter customer information for warranty registration.</p>
           </div>
         </div>
 
         <div class="customer-box">
+
           <mat-form-field appearance="outline">
+
             <mat-label>Customer Name</mat-label>
-            <input matInput formControlName="customerName" placeholder="Enter customer full name" />
+
+            <input
+              matInput
+              formControlName="customerName">
+
             <mat-error *ngIf="form.controls.customerName.hasError('required')">
               Customer name is required
             </mat-error>
+
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Contact Number</mat-label>
-            <input matInput maxlength="10" formControlName="contactNumber" placeholder="Enter 10 digit mobile number" />
+
+            <mat-label>Mobile Number</mat-label>
+
+            <input
+              matInput
+              maxlength="10"
+              formControlName="contactNumber">
+
             <mat-error *ngIf="form.controls.contactNumber.hasError('required')">
-              Contact number is required
+              Mobile number is required
             </mat-error>
+
             <mat-error *ngIf="form.controls.contactNumber.hasError('pattern')">
-              Enter valid 10 digit contact number
+              Enter a valid 10 digit mobile number
             </mat-error>
+
           </mat-form-field>
+
         </div>
 
-        <div class="note-box">
-          <strong>Note:</strong>
-          Emergency contacts are not required for warranty registration.
-          After warranty submission, customer can choose whether to activate Emergency Profile.
-        </div>
       </section>
 
-      <div class="error-box" *ngIf="error()">
+      <div
+        class="error-box"
+        *ngIf="error()">
+
         {{ error() }}
+
       </div>
 
-      <div class="success-box" *ngIf="success()">
+      <div
+        class="success-box"
+        *ngIf="success()">
+
         {{ success() }}
+
       </div>
 
       <div class="submit-area">
-        <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
-          {{ loading() ? 'Submitting...' : 'Submit Warranty Registration' }}
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loading()">
+
+          {{ loading() ? 'Submitting...' : 'Register Warranty' }}
+
         </button>
+
       </div>
+
     </form>
+
   </mat-card>
+
 </div>

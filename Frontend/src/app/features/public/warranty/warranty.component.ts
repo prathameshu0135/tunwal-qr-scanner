@@ -97,48 +97,44 @@ export class WarrantyComponent {
     contactNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]]
   });
 
-  submitWarranty(): void {
-    if (!this.qrId) {
-      this.error.set('QR ID missing. Please scan QR again.');
-      return;
-    }
-
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.error.set('Please fill all required warranty fields correctly.');
-      return;
-    }
-
-    const otpVerified = sessionStorage.getItem(`otp_verified_${this.qrId}`);
-
-    if (otpVerified !== 'true') {
-      this.error.set('OTP verification required before warranty registration.');
-      this.router.navigate(['/activate', this.qrId]);
-      return;
-    }
-
-    this.loading.set(true);
-    this.error.set('');
-    this.success.set('');
-
-    const payload = {
-      qrId: this.qrId,
-      ...this.form.getRawValue()
-    };
-
-    this.api.registerWarranty(payload).subscribe({
-      next: (res) => {
-        this.loading.set(false);
-        this.success.set(res?.message || 'Warranty registration completed successfully.');
-
-        setTimeout(() => {
-          this.router.navigate(['/warranty-success', this.qrId]);
-        }, 700);
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.error.set(err?.error?.message || 'Warranty registration failed.');
-      }
-    });
+submitWarranty(): void {
+  if (!this.qrId) {
+    this.error.set('QR ID missing. Please scan the QR code again.');
+    return;
   }
+
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.error.set('Please fill all required fields.');
+    return;
+  }
+
+  this.loading.set(true);
+  this.error.set('');
+  this.success.set('');
+
+  const payload = {
+    qrId: this.qrId,
+    ...this.form.getRawValue()
+  };
+
+  this.api.registerWarranty(payload).subscribe({
+    next: (res: any) => {
+      this.loading.set(false);
+      this.success.set(
+        res?.message || 'Warranty registered successfully.'
+      );
+
+      setTimeout(() => {
+        this.router.navigate(['/warranty-success', this.qrId]);
+      }, 700);
+    },
+    error: (err: any) => {
+      this.loading.set(false);
+      this.error.set(
+        err?.error?.message || 'Warranty registration failed.'
+      );
+    }
+  });
+}
 }
