@@ -14,9 +14,11 @@ import { ApiService } from '../../../core/services/api.service';
     MatCardModule,
     MatButtonModule
   ],
+
   templateUrl: './activate.component.html',
   styleUrl: './activate.component.css'
 })
+
 export class ActivateComponent implements OnInit {
   qrId = '';
 
@@ -59,7 +61,8 @@ export class ActivateComponent implements OnInit {
   console.log('GO REGISTER');
   this.router.navigate(['/register', this.qrId]);
 },
-      
+
+
       error: (err) => {
         this.error.set(
           err?.error?.message || 'Failed to load QR details.'

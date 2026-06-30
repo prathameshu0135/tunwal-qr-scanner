@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -6,19 +6,25 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { DashboardResponse } from '../../../shared/models/api.models';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatCardModule,
+    MatButtonModule
+  ],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+
   loading = signal(true);
   error = signal('');
-  data = signal<DashboardResponse | null>(null);
+
+  dashboard = signal<any>(null);
 
   constructor(
     private api: ApiService,
@@ -27,53 +33,77 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.load();
+    this.loadDashboard();
   }
 
-  load(): void {
+  loadDashboard(): void {
+
     this.loading.set(true);
     this.error.set('');
 
     this.api.getDashboard().subscribe({
-      next: (res) => {
-        this.data.set(res);
+
+      next: (res: any) => {
+
+        this.dashboard.set(res);
+
         this.loading.set(false);
+
       },
+
       error: (err) => {
-        this.error.set(err?.error?.message || 'Failed to load dashboard');
+
         this.loading.set(false);
+
+        this.error.set(
+          err?.error?.message ||
+          'Unable to load dashboard.'
+        );
+
       }
+
     });
+
   }
 
-  logout(): void {
+  refresh() {
+    this.loadDashboard();
+  }
+
+  logout() {
+
     this.auth.logout();
+
     this.router.navigate(['/admin/login']);
+
   }
 
-  refresh(): void {
-    this.load();
-  }
+  warrantyPercent = computed(() => {
 
-  get warrantyCompletionRate(): number {
-    const d = this.data();
+    const d = this.dashboard();
 
-    if (!d || !d.totalQrs) {
-      return 0;
-    }
+    if (!d) return 0;
 
-    const registered = d.warrantyRegistered || 0;
-    return Math.round((registered / d.totalQrs) * 100);
-  }
+    if (d.totalQrs === 0) return 0;
 
-  get emergencyActivationRate(): number {
-    const d = this.data();
+    return Math.round(
+      (d.warrantyRegistered / d.totalQrs) * 100
+    );
 
-    if (!d || !d.totalQrs) {
-      return 0;
-    }
+  });
 
-    const active = d.emergencyActive || 0;
-    return Math.round((active / d.totalQrs) * 100);
-  }
+  activePercent = computed(() => {
+
+    const d = this.dashboard();
+
+    if (!d) return 0;
+
+    if (d.totalQrs === 0) return 0;
+
+    return Math.round(
+      (d.activeQrs / d.totalQrs) * 100
+    );
+
+  });
+
 }

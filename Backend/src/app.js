@@ -9,7 +9,6 @@ const publicRoutes = require('./routes/publicRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const warrantyRoutes = require('./routes/warrantyRoutes');
 const adminWarrantyRoutes = require('./routes/adminWarrantyRoutes');
-
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();

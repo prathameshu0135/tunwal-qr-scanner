@@ -20,14 +20,6 @@ const qrCodeSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-
-    // Direct emergency page link.
-    // This works only after emergency profile is activated.
-    emergencyLink: {
-      type: String,
-      required: true
-    },
-
     /*
       Main QR lifecycle status.
       Use this for admin-level QR control.
@@ -36,7 +28,6 @@ const qrCodeSchema = new mongoose.Schema(
       type: String,
       enum: [
         'inactive',
-        'otp_pending',
         'active',
         'blocked',
         'expired',
@@ -50,7 +41,6 @@ const qrCodeSchema = new mongoose.Schema(
       type: String,
       enum: [
         'inactive',
-        'otp_pending',
         'active',
         'blocked',
         'expired',
@@ -77,54 +67,6 @@ const qrCodeSchema = new mongoose.Schema(
       default: null
     },
 
-    /*
-      Emergency profile status.
-      Emergency is optional and consent-based.
-      Actual emergency data stays in Customer.js / EmergencyContact.js.
-    */
-    emergencyStatus: {
-      type: String,
-      enum: ['inactive', 'active', 'skipped'],
-      default: 'inactive'
-    },
-
-    emergencyActivatedAt: {
-      type: Date,
-      default: null
-    },
-
-    emergencySkippedAt: {
-      type: Date,
-      default: null
-    },
-
-    ownerMobile: {
-      type: String,
-      default: '',
-      trim: true
-    },
-
-    blockedReason: {
-      type: String,
-      default: '',
-      trim: true
-    },
-
-    blockedAt: {
-      type: Date,
-      default: null
-    },
-
-    unblockedAt: {
-      type: Date,
-      default: null
-    },
-
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Admin',
-      required: true
-    }
   },
   { timestamps: true }
 );
@@ -141,14 +83,12 @@ qrCodeSchema.index({ qrId: 1 }, { unique: true });
 // Dashboard counts / filters
 qrCodeSchema.index({ status: 1 });
 qrCodeSchema.index({ warrantyStatus: 1 });
-qrCodeSchema.index({ emergencyStatus: 1 });
 
 // Admin lists / latest QR first
 qrCodeSchema.index({ createdAt: -1 });
 
 // Useful combined filters for dashboard/admin list
 qrCodeSchema.index({ warrantyStatus: 1, createdAt: -1 });
-qrCodeSchema.index({ emergencyStatus: 1, createdAt: -1 });
 qrCodeSchema.index({ status: 1, createdAt: -1 });
 
 // Owner lookup if needed later

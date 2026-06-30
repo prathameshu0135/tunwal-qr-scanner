@@ -119,13 +119,6 @@ export const routes: Routes = [
       )
   },
 
-  {
-    path: 'register/:qrId',
-    loadComponent: () =>
-      import('./features/public/register/register.component').then(
-        (m) => m.RegisterComponent
-      )
-  },
 
   {
     path: 'blocked/:qrId',

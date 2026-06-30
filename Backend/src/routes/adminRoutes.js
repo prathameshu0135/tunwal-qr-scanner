@@ -13,7 +13,6 @@ const {
   blockQr,
   unblockQr,
   resetQr,
-  getCustomers,
   getScanLogs,
   getAnalytics
 } = require('../controllers/adminController');
@@ -32,11 +31,11 @@ router.get('/qr-list', protectAdmin, listQrs);
 router.get('/qr/:id', protectAdmin, getQrById);
 router.put('/qr/:id', protectAdmin, updateQr);
 router.patch('/qr/:id/details', protectAdmin, updateQrDetails);
+
 router.patch('/qr/:id/block', protectAdmin, blockQr);
 router.patch('/qr/:id/unblock', protectAdmin, unblockQr);
 router.patch('/qr/:id/reset', protectAdmin, resetQr);
 
-router.get('/customers', protectAdmin, getCustomers);
 router.get('/scan-logs', protectAdmin, getScanLogs);
 router.get('/analytics', protectAdmin, getAnalytics);
 
