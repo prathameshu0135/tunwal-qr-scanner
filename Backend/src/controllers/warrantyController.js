@@ -109,6 +109,8 @@ const registerWarranty = asyncHandler(async (req, res) => {
   qr.warrantyRegisteredAt = new Date();
   await qr.save();
 
+  console.log('QR createdBy:', qr.createdBy);
+
   await AuditLog.create({
     adminId: qr.createdBy,
     action: 'WARRANTY_REGISTERED',

@@ -14,6 +14,8 @@ const qrCodeSchema = new mongoose.Schema(
       default: ''
     },
 
+    
+
     // Main public QR entry link.
     // This should open frontend resolver page: /qr/:qrId
     activationLink: {
@@ -66,6 +68,22 @@ const qrCodeSchema = new mongoose.Schema(
       type: Date,
       default: null
     },
+
+    createdBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Admin',
+  required: true
+},
+
+ownerMobile: {
+  type: String,
+  default: ''
+},
+
+blockedReason: {
+  type: String,
+  default: ''
+},
 
   },
   { timestamps: true }

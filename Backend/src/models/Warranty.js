@@ -124,5 +124,29 @@ warrantySchema.index({ dateOfSale: -1 });
 warrantySchema.index({ state: 1, createdAt: -1 });
 warrantySchema.index({ dealerName: 1, createdAt: -1 });
 warrantySchema.index({ customerName: 1, contactNumber: 1 });
+warrantySchema.index(
+    { qrId:1 },
+    { unique:true }
+);
+
+warrantySchema.index(
+    { chassisNumber:1 },
+    { unique:true }
+);
+
+warrantySchema.index(
+    { batteryNumber:1 },
+    { unique:true }
+);
+
+warrantySchema.index(
+    { motorNumber:1 },
+    { unique:true }
+);
+
+warrantySchema.index(
+    { controllerNumber:1 },
+    { unique:true }
+);
 
 module.exports = mongoose.model('Warranty', warrantySchema);
