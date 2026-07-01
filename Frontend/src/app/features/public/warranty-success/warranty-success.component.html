@@ -1,12 +1,11 @@
 <div class="success-page">
+
   <header class="company-header">
     <div class="company-left">
       <img
         src="/assets/logo.webp"
-        alt="Tunwal E-Motors Logo"
+        alt="Tunwal Logo"
         class="company-logo"
-        width="62"
-        height="62"
       />
 
       <div>
@@ -17,15 +16,22 @@
   </header>
 
   <main class="success-shell">
+
     <mat-card class="success-card">
-      <div class="success-icon">✓</div>
 
-      <span class="badge">Warranty Registered</span>
+      <div class="success-icon">
+        ✓
+      </div>
 
-      <h1>Warranty Registration Completed</h1>
+      <span class="badge">
+        Warranty Registered Successfully
+      </span>
+
+      <h1>Thank You!</h1>
 
       <p class="main-text">
-        Your vehicle warranty registration has been completed successfully.
+        Your vehicle warranty has been registered successfully.
+        Your information has been securely stored in our system.
       </p>
 
       <div class="qr-summary">
@@ -33,19 +39,19 @@
         <strong>{{ qrId }}</strong>
       </div>
 
-      <div class="final-box">
-        <div class="final-icon">✓</div>
+      <div class="info-box">
 
-        <h3>Registration Successful</h3>
+        <h3>Registration Complete</h3>
 
         <p>
-          Thank you for registering your vehicle warranty.
-          Your warranty record has been saved successfully.
+          Your warranty is now active.
         </p>
-      </div>
 
-      <div class="privacy-note">
-        Warranty details are securely stored and visible only to authorized administrators.
+        <p>
+          Keep this QR code attached to your vehicle.
+          It will be required for warranty verification and future service support.
+        </p>
+
       </div>
 
       <div class="message success-message" *ngIf="message()">
@@ -60,11 +66,14 @@
         mat-raised-button
         color="primary"
         class="primary-action"
-        type="button"
-        (click)="goHome()"
-      >
+        (click)="goHome()">
+
         Finish
+
       </button>
+
     </mat-card>
+
   </main>
+
 </div>
