@@ -4,16 +4,23 @@ async function generateQrId() {
   const year = new Date().getFullYear();
 
   const counter = await Counter.findOneAndUpdate(
-    { name: 'qrId' },
-    { $inc: { seq: 1 } },
+    { name: `qrId-${year}` },
     {
-      returnDocument: 'after',
-      upsert: true
+      $inc: { seq: 1 },
+      $setOnInsert: {
+        name: `qrId-${year}`,
+        seq: 0
+      }
+    },
+    {
+      upsert: true,
+      new: true
     }
   );
 
-  const next = String(counter.seq).padStart(6, '0');
-  return `TUNW-QR-${year}-${next}`;
+  const sequence = String(counter.seq).padStart(7, '0');
+
+  return `TUNW-QR-${year}-${sequence}`;
 }
 
 module.exports = generateQrId;

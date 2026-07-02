@@ -14,7 +14,7 @@ const warrantySchema = new mongoose.Schema(
       required: true,
       trim: true
     },
-
+                             
     scooterColor: {
       type: String,
       required: true,

@@ -5,7 +5,6 @@ const QRCode = require('qrcode');
 const Admin = require('../models/admin');
 const QrCodeModel = require('../models/QrCode');
 const Warranty = require('../models/Warranty');
-const ScanLog = require('../models/ScanLog');
 const AuditLog = require('../models/AuditLog');
 
 const generateQrId = require('../utils/generateQrId');
@@ -122,18 +121,14 @@ const getDashboard = asyncHandler(async (req, res) => {
     inactiveQrs,
     blockedQrs,
     warrantyPending,
-    warrantyRegistered,
-    totalScans
+    warrantyRegistered
   ] = await Promise.all([
     QrCodeModel.countDocuments(),
     QrCodeModel.countDocuments({ status: 'active' }),
     QrCodeModel.countDocuments({ status: 'inactive' }),
     QrCodeModel.countDocuments({ status: 'blocked' }),
-
     QrCodeModel.countDocuments({ warrantyStatus: 'pending' }),
-    QrCodeModel.countDocuments({ warrantyStatus: 'registered' }),
-
-    ScanLog.countDocuments()
+    QrCodeModel.countDocuments({ warrantyStatus: 'registered' })
   ]);
 
   res.json({
@@ -142,8 +137,7 @@ const getDashboard = asyncHandler(async (req, res) => {
     inactiveQrs,
     blockedQrs,
     warrantyPending,
-    warrantyRegistered,
-    totalScans
+    warrantyRegistered
   });
 });
 
@@ -296,10 +290,6 @@ const resetQr = asyncHandler(async (req, res) => {
 });
 
 /* ---------------- LOGS ---------------- */
-const getScanLogs = asyncHandler(async (req, res) => {
-  const data = await ScanLog.find().sort({ createdAt: -1 });
-  res.json(data);
-});
 
 const getAnalytics = asyncHandler(async (req, res) => {
   const statusCounts = await QrCodeModel.aggregate([
@@ -325,6 +315,5 @@ module.exports = {
   blockQr,
   unblockQr,
   resetQr,
-  getScanLogs,
   getAnalytics
 };

@@ -1,5 +1,4 @@
 const QrCodeModel = require('../models/QrCode');
-const ScanLog = require('../models/ScanLog');
 const asyncHandler = require('../utils/asyncHandler');
 
 /**
@@ -63,32 +62,8 @@ const getQrStatus = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * POST /api/public/scan-log
- * Save QR scan history
- */
-const createScanLog = asyncHandler(async (req, res) => {
-  const {
-    qrId,
-    scanType,
-    latitude,
-    longitude
-  } = req.body;
 
-  await ScanLog.create({
-    qrId,
-    scanType,
-    latitude,
-    longitude
-  });
-
-  res.status(201).json({
-    success: true,
-    message: 'Scan log created successfully.'
-  });
-});
 
 module.exports = {
-  getQrStatus,
-  createScanLog
+  getQrStatus
 };
