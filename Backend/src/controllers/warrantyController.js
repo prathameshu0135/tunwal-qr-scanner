@@ -50,7 +50,12 @@ const registerWarranty = asyncHandler(async (req, res) => {
 
   const qr = await QrCodeModel.findOne({ qrId: normalizedQrId });
 
-  if (!qr) return res.status(404).json({ success: false, message: 'QR not found' });
+  if (!qr) {
+    return res.status(404).json({
+      success: false,
+      message: 'QR not found'
+    });
+  }
 
   if (['blocked', 'expired', 'scrapped'].includes(qr.status)) {
     return res.status(400).json({
@@ -72,60 +77,71 @@ const registerWarranty = asyncHandler(async (req, res) => {
   const normalizedChassis = String(chassisNumber).trim().toUpperCase();
   const normalizedCharger = String(chargerNumber).trim().toUpperCase();
 
-  const existingChassis = await Warranty.findOne({ chassisNumber: normalizedChassis });
-  if (existingChassis) {
-    return res.status(400).json({ success: false, message: 'Chassis already registered' });
-  }
+  let warranty;
 
-  const existingMotor = await Warranty.findOne({ motorNumber: normalizedMotor });
-  if (existingMotor) {
-    return res.status(400).json({ success: false, message: 'Motor already registered' });
-  }
+  try {
+    warranty = await Warranty.create({
+      qrId: normalizedQrId,
+      scooterName: String(scooterName).trim(),
+      scooterColor: String(scooterColor).trim(),
+      controllerNumber: normalizedController,
+      batteryNumber: normalizedBattery,
+      motorNumber: normalizedMotor,
+      chassisNumber: normalizedChassis,
+      chargerNumber: normalizedCharger,
+      dealerName: String(dealerName).trim(),
+      customerName: String(customerName).trim(),
+      contactNumber: String(contactNumber).trim(),
+      dateOfSale,
+      dealerAddress: String(dealerAddress).trim(),
+      state: String(state).trim()
+    });
+  } catch (err) {
 
-  const existingBattery = await Warranty.findOne({ batteryNumber: normalizedBattery });
-  if (existingBattery) {
-    return res.status(400).json({ success: false, message: 'Battery already registered' });
-  }
+    if (err.code === 11000) {
 
-  const warranty = await Warranty.create({
-    qrId: normalizedQrId,
-    scooterName: String(scooterName).trim(),
-    scooterColor: String(scooterColor).trim(),
-    controllerNumber: normalizedController,
-    batteryNumber: normalizedBattery,
-    motorNumber: normalizedMotor,
-    chassisNumber: normalizedChassis,
-    chargerNumber: normalizedCharger,
-    dealerName: String(dealerName).trim(),
-    customerName: String(customerName).trim(),
-    contactNumber: String(contactNumber).trim(),
-    dateOfSale,
-    dealerAddress: String(dealerAddress).trim(),
-    state: String(state).trim()
-  });
+      const field = Object.keys(err.keyPattern || {})[0];
+
+      const messages = {
+        qrId: 'This QR is already registered.',
+        controllerNumber: 'Controller number already exists.',
+        batteryNumber: 'Battery number already exists.',
+        motorNumber: 'Motor number already exists.',
+        chassisNumber: 'Chassis number already exists.',
+        chargerNumber: 'Charger number already exists.'
+      };
+
+      return res.status(409).json({
+        success: false,
+        message: messages[field] || 'Duplicate record found.'
+      });
+    }
+
+    throw err;
+  }
 
   qr.status = 'active';
   qr.warrantyStatus = 'registered';
   qr.warrantyRegisteredAt = new Date();
   await qr.save();
 
-  console.log('QR createdBy:', qr.createdBy);
-
-  await AuditLog.create({
-    adminId: qr.createdBy,
-    action: 'WARRANTY_REGISTERED',
-    qrId: normalizedQrId,
-    details: {
-      customerName: warranty.customerName,
-      contactNumber: warranty.contactNumber,
-      scooterName: warranty.scooterName,
-      chassisNumber: warranty.chassisNumber
-    }
-  });
+  if (qr.createdBy) {
+    await AuditLog.create({
+      adminId: qr.createdBy,
+      action: 'WARRANTY_REGISTERED',
+      qrId: normalizedQrId,
+      details: {
+        customerName: warranty.customerName,
+        contactNumber: warranty.contactNumber,
+        scooterName: warranty.scooterName,
+        chassisNumber: warranty.chassisNumber
+      }
+    });
+  }
 
   return res.status(201).json({
     success: true,
-    message: 'Warranty registered',
+    message: 'Warranty registered successfully.',
     data: {
       qrId: warranty.qrId,
       warrantyStatus: qr.warrantyStatus
@@ -147,7 +163,7 @@ const getBasicWarranty = asyncHandler(async (req, res) => {
       message: 'QR not found'
     });
   }
-
+  
   if (['blocked', 'expired', 'scrapped'].includes(qr.status)) {
     return res.status(400).json({
       success: false,
@@ -182,6 +198,7 @@ const getBasicWarranty = asyncHandler(async (req, res) => {
       motorNumber: warranty.motorNumber,
       showroomName: warranty.dealerName
     }
+
   });
 });
 
